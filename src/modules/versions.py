@@ -1,0 +1,1 @@
+from minecraft_launcher_lib.install import install_minecraft_version
