@@ -4,15 +4,22 @@ import pathlib
 from shutil import which
 from datetime import datetime
 
+from modules.types import LauncherStandardConfigType, PyLauncherConfigType
+
 MINECRAFT_DIR = pathlib.Path(pathlib.Path.home() / ".minecraft")
-# PYLAUNCHER_CONFIG_FILE = pathlib.Path(MINECRAFT_DIR / "pylauncher" / "config.json")
+PYLAUNCHER_CONFIG_FILE = pathlib.Path(MINECRAFT_DIR / "pylauncher" / "config.json")
+PYLAUNCHER_CONFIG_DIR = PYLAUNCHER_CONFIG_FILE.parent
+PYLAUNCHER_DEFAULT_CONFIG: PyLauncherConfigType = {
+    "doAfterLaunch": "close",
+    "show_snapshots": False,
+    "show_beta_versions": False,
+    "show_alpha_versions": False
+}
 
-LAUNCHER_CONFIG_FILE = pathlib.Path(MINECRAFT_DIR / "launcher_profiles.json")
-
-# PYLAUNCHER_CONFIG_DIR = PYLAUNCHER_CONFIG_FILE.parent
+LAUNCHER_PROFILES_CONFIG_FILE = pathlib.Path(MINECRAFT_DIR / "launcher_profiles.json")
 
 DEFAULT_JVM_FLAGS = "-Xmx2G -XX:+UnlockExperimentalVMOptions -XX:+UseG1GC -XX:G1NewSizePercent=20 -XX:G1ReservePercent=20 -XX:MaxGCPauseMillis=50 -XX:G1HeapRegionSize=32M"
-DEFAULT_LAUNCHER_CONFIG = {
+DEFAULT_LAUNCHER_PROFILES_CONFIG: LauncherStandardConfigType = {
     "profiles": {
         "default": {
             "name": "Default",
@@ -31,21 +38,9 @@ DEFAULT_LAUNCHER_CONFIG = {
                 "height": 480
             },
 
-            # Specific launcher options
-            "disable-chat": False,
-            "disable-multiplayer": False,
-
         }
     },
     "authenticationDatabase": {},
-
-    "launcher":{
-        # "closeAfterLaunch": True,
-        "doAfterLaunch": "close",
-        "show-snapshots": False,
-        "show-old-versions": False,
-        "show-alpha-versions": False
-    },
 
     "selectedUser": "",
 
