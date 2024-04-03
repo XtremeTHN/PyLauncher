@@ -4,6 +4,7 @@ idna==3.6
 minecraft-launcher-lib==6.4
 pycairo==1.26.0
 PyGObject==3.48.1
-PyGObject-stubs==2.10.0
+PyGObject-stubs
 requests==2.31.0
 urllib3==2.2.1
+uuid==1.30
