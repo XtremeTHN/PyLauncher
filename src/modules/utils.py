@@ -1,6 +1,7 @@
-from gi.repository import Gtk
+from gi.repository import Gtk, GLib, Adw
 
 from modules.variables import MINECRAFT_DIR
+from modules.types import AuthenticationDatabaseType
 from minecraft_launcher_lib.utils import get_available_versions, get_installed_versions
 
 def set_margins(widget: Gtk.Widget, margins: list[int]):
@@ -28,6 +29,8 @@ class Versions(dict):
         for value in self:
             for y in self[value]:
                 result.append(y)
+                
+        # Que dolor de cabeza
         return [f"{x['type']} {x['id']}" for x in sorted(result, key=lambda x: x["releaseTime"], reverse=True)]
 
 def get_minecraft_versions():
@@ -43,3 +46,58 @@ def get_minecraft_versions():
             versions["alpha"].append(version_dict)
         
     return Versions(versions)
+
+def generate_minecraft_options(user_data: AuthenticationDatabaseType):
+    return {
+        "username": user_data["displayName"],
+        "uuid": user_data["uuid"],
+        "token": ""
+    }
+
+def idle(func, *args):
+    def wrapper(*args):
+        func(*args)
+        return GLib.SOURCE_REMOVE
+    
+    GLib.idle_add(wrapper, *args)
+
+
+class NavContent:
+    nav_stack: list
+    navigation: Adw.NavigationView
+
+    def __init__(self, spacing=10):
+        ...
+        # super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=spacing)
+    
+    def create_page(self, title, tag, spacing=10, add_to_nav=True, header=True, add_box=True):
+        if tag in self.nav_stack:
+            return None, None, None
+        
+        page = Adw.NavigationPage(title=title, tag=tag)
+
+        toolbar = Adw.ToolbarView()
+
+        content = None
+        if add_box is True:
+            content = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=spacing)
+            toolbar.set_content(content)
+
+        if header is True:
+            header_bar = Adw.HeaderBar.new()
+            toolbar.add_top_bar(header_bar)
+
+        page.set_child(toolbar)
+
+        if add_to_nav is True:
+            self.navigation.add(page)
+            self.nav_stack.append(page)
+
+        return page, content, toolbar
+
+    def remove_page(self, page):
+        self.navigation.remove(page)
+        for index, x in enumerate(self.nav_stack):
+            if x is page:
+                self.nav_stack.pop(index)
+

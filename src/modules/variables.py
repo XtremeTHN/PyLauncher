@@ -1,4 +1,4 @@
-import os
+import uuid
 import pathlib
 
 from shutil import which
@@ -32,15 +32,17 @@ DEFAULT_LAUNCHER_PROFILES_CONFIG: LauncherStandardConfigType = {
             "gameDir": str(MINECRAFT_DIR),
 
             "javaDir": which("java"),
-            "javaArgs": DEFAULT_JVM_FLAGS,
+            "javaArgs": None,
             "resolution": {
                 "width": 854,
                 "height": 480
             },
-
         }
     },
     "authenticationDatabase": {},
+    "clientToken": str(uuid.uuid4()),
+
+    "selectedProfile": "default",
 
     "selectedUser": "",
 

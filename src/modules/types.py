@@ -40,10 +40,13 @@ class AuthenticationDatabaseType(TypedDict):
 
 class LauncherStandardConfigType(TypedDict):
     profiles: dict[str, ProfileType]
-    authenticationDatabase: dict
+    authenticationDatabase: AuthenticationDatabaseType
 
     launcher: PyLauncherConfigType
 
+    clientToken: str
+
+    selectedProfile: str
     selectedUser: str
 
     launcherVersion: LauncherVersionType
