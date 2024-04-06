@@ -1,6 +1,7 @@
 import json
 import uuid
-import traceback
+import base64
+import os
 
 from shutil import which
 from datetime import datetime
@@ -10,7 +11,27 @@ from modules.variables import DEFAULT_LAUNCHER_PROFILES_CONFIG, \
     LAUNCHER_PROFILES_CONFIG_FILE, MINECRAFT_DIR, DEFAULT_JVM_FLAGS, \
     PYLAUNCHER_CONFIG_DIR, PYLAUNCHER_CONFIG_FILE, PYLAUNCHER_DEFAULT_CONFIG
 
-from gi.repository import GObject
+from gi.repository import GObject, GdkPixbuf, GLib, Gio
+
+def parse_icon(icon_str:str) -> GdkPixbuf.Pixbuf | None:
+    if icon_str.startswith("data:"):
+        icon = icon_str.strip("data:").split(";")
+        if icon[0] == "image/png":
+            # from https://stackoverflow.com/q/34720603
+            image_str = icon[1].split(",")[1]
+            raw = base64.b64decode(image_str)
+            byting = GLib.Bytes.new(raw)
+            inputing = Gio.MemoryInputStream.new_from_bytes(byting)
+            inputing = GdkPixbuf.Pixbuf.new_from_stream(inputing)
+            return inputing
+    
+def format_icon(icon_path: str) -> str:
+    if isinstance(icon_path, Path):
+        icon_path = str(icon_path)
+
+    with open(icon_path, "rb") as file:
+        content = base64.b64encode(file.read())
+        return f"data:image/png;base64,{content.decode()}"
 
 class LauncherConfig(GObject.GObject):
     __gsignals__ = {
@@ -27,11 +48,13 @@ class LauncherConfig(GObject.GObject):
     def __open_file(self, file: Path, default):
         if file.exists() is False:
             file.parent.mkdir(parents=True, exist_ok=True)
-            json.dump(default, open(str(file), 'w'), indent=4)
+            with open(str(file), 'w') as file_obj:
+                json.dump(default, file_obj, indent=4)
 
             content = default
         else:
-            content = json.load(open(str(file)))
+            with open(str(file), 'r') as file_obj:
+                content = json.load(file_obj)
 
         return content
 
@@ -59,6 +82,7 @@ class LauncherConfig(GObject.GObject):
 
     def remove_profile(self, name):
         del self.launcher_profiles_config["profiles"][name]
+        self.save()
 
     def get_profile(self, name):
         return self.launcher_profiles_config["profiles"][name]
@@ -69,17 +93,23 @@ class LauncherConfig(GObject.GObject):
     def get_selected_profile(self) -> ProfileType:
         return self.launcher_profiles_config["profiles"][self.launcher_profiles_config["selectedProfile"]]
     
+    def get_profiles_names(self):
+        return list(x["name"] for x in self.launcher_profiles_config["profiles"].values())
+    
+    def get_profiles(self):
+        return self.launcher_profiles_config["profiles"]
+
     def get_selected_user(self) -> AuthenticationDatabaseType:
         return self.launcher_profiles_config["authenticationDatabase"][self.launcher_profiles_config["selectedUser"]]
 
-
     def set_selected_profile(self, name):
         self.launcher_profiles_config["selectedProfile"] = name
-        self.emit('changed')
+        self.save()
 
     def set_selected_user(self, _uuid):
         self.launcher_profiles_config["selectedUser"] = _uuid
-        self.emit('changed')
+        self.save()
+
     def add_user(self, name) -> str:
         """Adds a user to the authentication database
 
@@ -98,7 +128,6 @@ class LauncherConfig(GObject.GObject):
             "username": name
         }
         self.save()
-        self.emit('changed')
 
         return str_uuid
     
@@ -109,10 +138,7 @@ class LauncherConfig(GObject.GObject):
             name (str): The uuid of the user
         """
         self.launcher_profiles_config["selectedUser"] = name
-        self.emit('changed')
-
-    def get_profile_names(self):
-        return list(x["name"] for x in self.launcher_profiles_config["profiles"].values())
+        self.save()
 
     def save(self):
         with open(LAUNCHER_PROFILES_CONFIG_FILE, "w") as f:
@@ -121,3 +147,5 @@ class LauncherConfig(GObject.GObject):
         with open(PYLAUNCHER_CONFIG_FILE, "w") as f:
             json.dump(self.py_launcher_config, f, indent=4)
         
+        self.emit('changed')
+    

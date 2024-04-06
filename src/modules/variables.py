@@ -52,3 +52,5 @@ DEFAULT_LAUNCHER_PROFILES_CONFIG: LauncherStandardConfigType = {
         "profilesFormat": 1
     }
 }
+
+DEFAULT_PROFILE_PAGE_CHILD_ICON = "image-missing-symbolic"
