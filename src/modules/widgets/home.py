@@ -1,3 +1,4 @@
+import subprocess
 from gi.repository import Gtk, Adw, Gio, WebKit
 
 from modules.utils import NavContent, set_margins, get_minecraft_versions, idle, generate_minecraft_options
@@ -14,14 +15,16 @@ import threading
 
 
 class HomePage(NavContent):
-    def __init__(self, config, nav_stack, navigation_view):
+    def __init__(self, config, nav_stack, navigation_view, toast):
         self.nav_stack = nav_stack
         self.navigation = navigation_view
         self.config: LauncherConfig = config
+        self.toast = toast
 
     def show_main_page(self):
         self.config = self.config or LauncherConfig()
         page, _, toolbar = self.create_page("PyLauncher", "main-page", add_to_nav=False, header=False, add_box=False)
+        
         self.navigation.replace([page])
         self.nav_stack = [page]
 
@@ -36,7 +39,6 @@ class HomePage(NavContent):
         header.set_title_widget(switcher)
 
         self.create_play_page(stack, toolbar)
-        self.navigation.push(page)
 
     def create_play_page(self, stack: Adw.ViewStack, toolbar: Adw.ToolbarView):
         root_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
@@ -50,8 +52,6 @@ class HomePage(NavContent):
         launch_btt = Gtk.Button(label="Launch", halign=Gtk.Align.CENTER, 
                                 css_classes=["pill", "suggested-action"])
         set_margins(launch_btt, [10])
-
-        # launch_btt.set_size_request(300, -1)
  
         bottom_bar.append(launch_btt)
 
@@ -128,6 +128,7 @@ class HomePage(NavContent):
 
     def install_minecraft(self, btt: Gtk.Button, box: Gtk.Box, label: Gtk.Label, progress_bar: Gtk.ProgressBar):
         btt.set_sensitive(False)
+        btt.set_label("Launching...")
 
         profile = self.config.get_selected_profile()
         version = list(filter(lambda x: x["id"] == profile.get("lastVersionId"), get_installed_versions(MINECRAFT_DIR)))
@@ -135,9 +136,7 @@ class HomePage(NavContent):
             btt.set_visible(False)
             box.set_visible(True)
 
-            versionId = profile.get("lastVersionId")
-            if versionId is None:
-                versionId = "latest"
+            versionId = profile.get("lastVersionId","latest")
 
             if versionId == "latest":
                 versionId = get_latest_version()["release"]
@@ -146,6 +145,9 @@ class HomePage(NavContent):
                 "setStatus": lambda x: self.set_status(x, label, box, btt),
                 "setProgress": lambda _: self.set_progress(progress_bar)
             }]).start()
+            return
+        else:
+            threading.Thread(target=self.launch_minecraft, args=[btt]).start()
     
     # Executed on another thread
     def launch_minecraft(self, btt):
@@ -157,10 +159,12 @@ class HomePage(NavContent):
             version = get_latest_version()["release"]
 
         command = get_minecraft_command(version, MINECRAFT_DIR, generate_minecraft_options(user))
+        # toast = Adw.Toast(title="Minecraft Launched. You can see the minecraft logs on 'Logs' page")
 
-        with Popen(command) as process:
+        with Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE) as process:
+            idle(btt.set_label, "Launched")
             process.wait()
-            idle(btt.set_sensitive, True)
+            self.restart_button_state(btt)
 
     def set_status(self, status, label, box, btt):
         if status == "Installation complete":
@@ -170,6 +174,12 @@ class HomePage(NavContent):
             self.launch_minecraft(btt)
 
         idle(label.set_label, status)
+
+    def restart_button_state(self, btt: Gtk.Button):
+        idle(btt.set_visible, True)
+        idle(btt.set_sensitive, True)
+        idle(btt.set_label, "Launch")
+        idle(btt.set_css_classes, ["pill", "suggested-action"])
     
     def set_progress(self, progress_bar: Gtk.ProgressBar):
         idle(progress_bar.pulse)

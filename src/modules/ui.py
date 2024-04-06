@@ -16,13 +16,14 @@ class PyLauncherWindow(Adw.ApplicationWindow, NavContent):
 
         self.nav_stack = []
         self.config = None
+        self.toast = Adw.ToastOverlay.new()
 
         self.set_default_size(600, 600)
         self.set_size_request(600, 600)
 
         self.navigation = Adw.NavigationView.new()
 
-        self.home_obj = HomePage(self.config, self.nav_stack, self.navigation)
+        self.home_obj = HomePage(self.config, self.nav_stack, self.navigation, self.toast)
 
         if os.path.exists(os.path.join(MINECRAFT_DIR)) is False:
             assistant = AssistantPage(self.nav_stack, self.navigation, self.home_obj.show_main_page)
@@ -34,5 +35,3 @@ class PyLauncherWindow(Adw.ApplicationWindow, NavContent):
 
         self.present()
     
-    # Step 5/1
-    # def show_main_page(self):

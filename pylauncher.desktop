@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=PyLauncher
+Comment=A minecraft launcher
+GenericName=Minecraft Launcher
+Exec=/usr/bin/pylauncher
+Icon=minecraft
+Type=Application

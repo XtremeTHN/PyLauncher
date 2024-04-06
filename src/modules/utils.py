@@ -61,12 +61,11 @@ def idle(func, *args):
     
     GLib.idle_add(wrapper, *args)
 
-
 class NavContent:
     nav_stack: list
     navigation: Adw.NavigationView
 
-    def __init__(self, spacing=10):
+    def __init__(self):
         ...
         # super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=spacing)
     
