@@ -15,14 +15,14 @@ import threading
 
 
 class HomePage(NavContent):
-    def __init__(self, config, nav_stack, navigation_view, toast, stack, switcher):
-        self.nav_stack = nav_stack
-        self.navigation = navigation_view
-        self.config: LauncherConfig = config
-        self.toast = toast
+    def __init__(self, window):
+        self.nav_stack: list[Gtk.Widget] = window.nav_stack
+        self.navigation: Adw.NavigationView = window.navigation
+        self.config: LauncherConfig = window.config
+        self.toast: Adw.ToastOverlay = window.toast
         
-        self.stack: Adw.ViewStack = stack
-        self.switcher: Adw.ViewSwitcher = switcher
+        self.stack: Adw.ViewStack = window.stack
+        self.switcher: Adw.ViewSwitcher = window.switcher
 
     def show_main_page(self):
         self.config = self.config or LauncherConfig()
@@ -102,7 +102,7 @@ class HomePage(NavContent):
 
         profile = self.config.get_selected_profile()
         for index, value in enumerate(_versions_list):
-            if value.split(" ")[-1] == profile["lastVersionId"]:
+            if value.split(" ")[-1] == profile.get("lastVersionId"):
                 versions_row.set_selected(index)
                 break
 
@@ -154,7 +154,7 @@ class HomePage(NavContent):
     def launch_minecraft(self, btt):
         profile = self.config.get_selected_profile()
         user = self.config.get_selected_user()
-        version = profile["lastVersionId"]
+        version = profile.get("lastVersionId", "latest")
 
         if version == "latest":
             version = get_latest_version()["release"]
@@ -164,6 +164,7 @@ class HomePage(NavContent):
 
         with Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE) as process:
             idle(btt.set_label, "Launched")
+            self.notify("Minecraft Launched. You can see minecraft logs on the logs page")
             process.wait()
             self.restart_button_state(btt)
 
@@ -184,6 +185,10 @@ class HomePage(NavContent):
     
     def set_progress(self, progress_bar: Gtk.ProgressBar):
         idle(progress_bar.pulse)
+        
+    def notify(self, message):
+        toast_child = Adw.Toast.new(message)
+        idle(self.toast.add_toast, toast_child)
 
     # Below functions are executed on main thread... Maybe idk.
     def open_minecraft_root(self, _):
