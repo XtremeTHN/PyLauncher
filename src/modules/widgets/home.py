@@ -15,11 +15,14 @@ import threading
 
 
 class HomePage(NavContent):
-    def __init__(self, config, nav_stack, navigation_view, toast):
+    def __init__(self, config, nav_stack, navigation_view, toast, stack, switcher):
         self.nav_stack = nav_stack
         self.navigation = navigation_view
         self.config: LauncherConfig = config
         self.toast = toast
+        
+        self.stack: Adw.ViewStack = stack
+        self.switcher: Adw.ViewSwitcher = switcher
 
     def show_main_page(self):
         self.config = self.config or LauncherConfig()
@@ -31,16 +34,13 @@ class HomePage(NavContent):
         header = Adw.HeaderBar.new()
         toolbar.add_top_bar(header)
 
-        stack = Adw.ViewStack.new()
-        switcher = Adw.ViewSwitcher(stack=stack, policy=Adw.ViewSwitcherPolicy.WIDE)
+        toolbar.set_content(self.stack)
 
-        toolbar.set_content(stack)
+        header.set_title_widget(self.switcher)
 
-        header.set_title_widget(switcher)
+        self.create_play_page(toolbar)
 
-        self.create_play_page(stack, toolbar)
-
-    def create_play_page(self, stack: Adw.ViewStack, toolbar: Adw.ToolbarView):
+    def create_play_page(self, toolbar: Adw.ToolbarView):
         root_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
         set_margins(root_box, [10])
 
@@ -119,7 +119,8 @@ class HomePage(NavContent):
 
         root_box.append(home_page)
         root_box.append(mine_launch_opts)
-        stack.add_titled_with_icon(root_box, "home-page", "Home", "go-home-symbolic")
+        
+        self.stack.add_titled_with_icon(root_box, "home-page", "Home", "go-home-symbolic")
     
     def set_selected_version(self, combo: Adw.ComboRow, _):
         version: str = combo.get_selected_item().get_string()

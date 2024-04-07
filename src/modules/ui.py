@@ -31,7 +31,8 @@ class PyLauncherWindow(Adw.ApplicationWindow, NavContent):
         else:
             self.home_obj.show_main_page()
 
-        self.set_content(self.navigation)
+        self.toast.set_child(self.navigation)
+        self.set_content(self.toast)
 
         self.present()
     
