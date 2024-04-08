@@ -64,6 +64,7 @@ def idle(func, *args):
 class NavContent:
     nav_stack: list
     navigation: Adw.NavigationView
+    toast: Adw.ToastOverlay
 
     def __init__(self):
         ...
@@ -100,3 +101,7 @@ class NavContent:
             if x is page:
                 self.nav_stack.pop(index)
 
+    def notify(self, message):
+        if self.toast is not None:
+            toast_child = Adw.Toast.new(message)
+            idle(self.toast.add_toast, toast_child)

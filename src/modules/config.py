@@ -59,7 +59,7 @@ class LauncherConfig(GObject.GObject):
         return content
 
     def add_profile(self, name, type, version, disable_chat=False, disable_multiplayer=False, gameDir=str(MINECRAFT_DIR), javaDir=which("java"), javaArgs=DEFAULT_JVM_FLAGS, resolution=None, icon="minecraft"):
-        self["profiles"][name] = {
+        self.launcher_profiles_config["profiles"][name] = {
             "name": name,
             "type": type,
             "icon": icon,
@@ -79,11 +79,16 @@ class LauncherConfig(GObject.GObject):
             self.launcher_profiles_config["profiles"][name]["resolution"] = resolution
         
         self.save()
-
-    def remove_profile(self, name):
-        del self.launcher_profiles_config["profiles"][name]
+    
+    def add_profile_dict(self, name: str, config: ProfileType):
+        self.launcher_profiles_config[name] = config
         self.save()
 
+    def remove_profile(self, name, save=True):
+        del self.launcher_profiles_config["profiles"][name]
+        if save is True:
+            self.save()
+        
     def get_profile(self, name):
         return self.launcher_profiles_config["profiles"][name]
 
@@ -95,7 +100,7 @@ class LauncherConfig(GObject.GObject):
     
     def get_profiles_names(self):
         return list(x["name"] for x in self.launcher_profiles_config["profiles"].values())
-    
+        
     def get_profiles(self):
         return self.launcher_profiles_config["profiles"]
 

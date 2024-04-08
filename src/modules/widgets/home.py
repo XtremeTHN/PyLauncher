@@ -24,7 +24,7 @@ class HomePage(NavContent):
         self.stack: Adw.ViewStack = window.stack
         self.switcher: Adw.ViewSwitcher = window.switcher
 
-    def show_main_page(self):
+    def create_main_page(self):
         self.config = self.config or LauncherConfig()
         page, _, toolbar = self.create_page("PyLauncher", "main-page", add_to_nav=False, header=False, add_box=False)
         
@@ -112,7 +112,7 @@ class HomePage(NavContent):
         self.config.connect("changed", lambda x: current_profile.set_subtitle(self.config.get_selected_profile()["name"]))
 
         current_user = Adw.ActionRow(title="User selected", subtitle=self.config.get_selected_user()["displayName"], css_classes=["property"])
-        self.config.connect("changed", lambda x: current_user.set_subtitle(self.config.get_selected_user()["name"]))
+        self.config.connect("changed", lambda x: current_user.set_subtitle(self.config.get_selected_user()["username"]))
 
         mine_launch_opts.append(current_profile)
         mine_launch_opts.append(current_user)
@@ -160,7 +160,6 @@ class HomePage(NavContent):
             version = get_latest_version()["release"]
 
         command = get_minecraft_command(version, MINECRAFT_DIR, generate_minecraft_options(user))
-        # toast = Adw.Toast(title="Minecraft Launched. You can see the minecraft logs on 'Logs' page")
 
         with Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE) as process:
             idle(btt.set_label, "Launched")
@@ -185,10 +184,6 @@ class HomePage(NavContent):
     
     def set_progress(self, progress_bar: Gtk.ProgressBar):
         idle(progress_bar.pulse)
-        
-    def notify(self, message):
-        toast_child = Adw.Toast.new(message)
-        idle(self.toast.add_toast, toast_child)
 
     # Below functions are executed on main thread... Maybe idk.
     def open_minecraft_root(self, _):

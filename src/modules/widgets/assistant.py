@@ -4,10 +4,10 @@ from modules.utils import NavContent
 from modules.config import LauncherConfig
 
 class AssistantPage(NavContent):
-    def __init__(self, nav_stack, navigation_view, main_page_func):
-        self.nav_stack = nav_stack
-        self.navigation = navigation_view
-        self.show_main_page = main_page_func
+    def __init__(self, window):
+        self.nav_stack: list[Gtk.Widget] = window.nav_stack
+        self.navigation: Adw.NavigationView = window.navigation
+        self.show_main_page = window.show_main_page
         super().__init__()
     # Step 1
     def show_first_launch(self):
@@ -33,8 +33,6 @@ class AssistantPage(NavContent):
 
     # Step 3
     def show_user_creation_page(self):
-        self.config = LauncherConfig()
-
         page, content, _ = self.create_page("User Creation", "user-creation-page")
         content.set_valign(Gtk.Align.CENTER)
         content.set_halign(Gtk.Align.CENTER)
@@ -54,9 +52,11 @@ class AssistantPage(NavContent):
     
     # Step 4
     def create_user(self, _, entry, page):
+        config = LauncherConfig()
+
         username = entry.get_text()
-        print(username)
-        user_id = self.config.add_user(username)
-        self.config.set_selected_user(user_id)
-        self.config.save()
+        user_id = config.add_user(username)
+        config.set_selected_user(user_id)
+        config.save()
+
         self.show_main_page()

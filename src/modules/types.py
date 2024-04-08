@@ -1,4 +1,4 @@
-from typing import TypedDict, Literal, Sequence
+from typing import TypedDict, Literal, Sequence, Optional
 
 
 class MinecraftResolution(TypedDict):
@@ -9,23 +9,20 @@ class ProfileType(TypedDict):
     type: Literal["custom", "latest-release", "latest-snapshot"]
 
     created: str
-    icon: str
+    icon: Optional[str]
 
     lastVersionId: str
-    gameDir: str
+    gameDir: Optional[str]
 
-    javaDir: str
-    javaArgs: Sequence[str]
+    javaDir: Optional[str]
+    javaArgs: Optional[Sequence[str]]
 
-    resolution: MinecraftResolution
+    resolution: Optional[MinecraftResolution]
     disable_chat: bool
     disable_multiplayer: bool
 
 class PyLauncherConfigType(TypedDict):
     doAfterLaunch: Literal["close", "minimize", "stayOpen"]
-    show_snapshots: bool
-    show_beta_versions: bool
-    show_alpha_versions: bool
 
 class LauncherVersionType(TypedDict):
     name: str

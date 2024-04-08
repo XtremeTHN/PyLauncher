@@ -4,6 +4,7 @@ from modules.variables import MINECRAFT_DIR
 from modules.config import LauncherConfig
 
 from modules.widgets.home import HomePage
+from modules.widgets.profiles import ProfilesPage
 from modules.widgets.assistant import AssistantPage
 from modules.utils import NavContent
 
@@ -15,8 +16,8 @@ class PyLauncherWindow(Adw.ApplicationWindow, NavContent):
         NavContent.__init__(self)
 
         self.nav_stack = []
-        self.config = None
         self.toast = Adw.ToastOverlay.new()
+        self.config: LauncherConfig = None
         
         self.stack = Adw.ViewStack.new()
         self.switcher = Adw.ViewSwitcher(stack=self.stack, policy=Adw.ViewSwitcherPolicy.WIDE)
@@ -29,13 +30,24 @@ class PyLauncherWindow(Adw.ApplicationWindow, NavContent):
         self.home_obj = HomePage(self)
 
         if os.path.exists(os.path.join(MINECRAFT_DIR)) is False:
-            assistant = AssistantPage(self.nav_stack, self.navigation, self.home_obj.show_main_page)
+            assistant = AssistantPage(self)
             assistant.show_first_launch()
         else:
-            self.home_obj.show_main_page()
-
+            self.show_main_page()
+            
         self.toast.set_child(self.navigation)
+    
         self.set_content(self.toast)
 
         self.present()
     
+    def show_main_page(self):
+        self.config = LauncherConfig()
+        
+        profiles = ProfilesPage(self, self.config)
+        profiles.create_profiles_page()
+        
+        self.home_obj.config = self.config
+        self.home_obj.create_main_page()
+        
+        self.stack.set_visible_child_name("home-page")
