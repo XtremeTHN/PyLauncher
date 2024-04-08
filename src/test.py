@@ -1,18 +1,25 @@
-from minecraft_launcher_lib.install import install_minecraft_version
-from minecraft_launcher_lib.utils import get_latest_version, generate_test_options
-from minecraft_launcher_lib.command import get_minecraft_command
+from gi.repository import Gio
 
-import os
+def timeit(func):
+    def wrapper(*args, **kwargs):
+        import time
+        t1 = time.perf_counter()
+        func(*args, **kwargs)
+        t2 = time.perf_counter()
 
-latest = get_latest_version()["release"]
+        time = t2 - t1
+        print(f"Took '{time:.3f}' seconds to complete")
+    
+    return wrapper
 
-# install_minecraft_version(latest, os.path.expanduser("~/.minecraft"), callback={
-#     "setProgress": print
-# })
+@timeit
+def read_gio():
+    file = Gio.File.new_for_path("/home/axel/.config/fish/config.fish")
+    file.load_contents(None)
 
-options = generate_test_options()
-print(options)
-minecraft_cmd = get_minecraft_command(latest, os.path.expanduser("~/.minecraft"), options)
-
-print(minecraft_cmd)
-# os.system(" ".join(minecraft_cmd))
+@timeit
+def read_builtin():
+    file = open("/home/axel/.config/fish/config.fish", "r")
+    file.read()
+read_gio()
+read_builtin()

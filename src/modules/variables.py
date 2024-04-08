@@ -4,6 +4,7 @@ import pathlib
 from shutil import which
 from datetime import datetime
 
+from minecraft_launcher_lib.utils import get_java_executable
 from modules.types import LauncherStandardConfigType, PyLauncherConfigType
 
 MINECRAFT_DIR = pathlib.Path(pathlib.Path.home() / ".minecraft")
@@ -52,5 +53,10 @@ DEFAULT_LAUNCHER_PROFILES_CONFIG: LauncherStandardConfigType = {
         "profilesFormat": 1
     }
 }
+
+DEFAULT_MINECRAFT_WINDOW_WIDTH=854
+DEFAULT_MINECRAFT_WINDOW_HEIGHT=480
+
+JAVA_PATH=get_java_executable()
 
 DEFAULT_PROFILE_PAGE_CHILD_ICON = "image-missing-symbolic"

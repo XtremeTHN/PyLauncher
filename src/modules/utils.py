@@ -1,8 +1,8 @@
-from gi.repository import Gtk, GLib, Adw
+from gi.repository import Gtk, GLib, Adw, Gio, GdkPixbuf
 
 from modules.variables import MINECRAFT_DIR
 from modules.types import AuthenticationDatabaseType
-from minecraft_launcher_lib.utils import get_available_versions, get_installed_versions
+from minecraft_launcher_lib.utils import get_available_versions
 
 def set_margins(widget: Gtk.Widget, margins: list[int]):
     """
@@ -60,6 +60,30 @@ def idle(func, *args):
         return GLib.SOURCE_REMOVE
     
     GLib.idle_add(wrapper, *args)
+
+
+def include_file(file: str, gfile=None) -> str:
+    """
+    Opens a file, reads it, and return it's contents.
+    It uses Gio.File for reading the file.
+
+    Args:
+        file (str): The file path
+
+    Returns:
+        str: The contents of the file
+    """
+    gfile = gfile or Gio.File.new_for_path(file)
+    if gfile.query_exists() is not False:
+        return gfile.load_contents(None)[1].decode('utf-8')
+    else:
+        return ""
+    
+def pixbuf_from_bytes(data: bytes) -> GdkPixbuf.Pixbuf:
+    byting = GLib.Bytes.new(data)
+    inputing = Gio.MemoryInputStream.new_from_bytes(byting)
+    inputing = GdkPixbuf.Pixbuf.new_from_stream(inputing)
+    return inputing
 
 class NavContent:
     nav_stack: list

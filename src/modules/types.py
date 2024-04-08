@@ -8,6 +8,14 @@ class ProfileType(TypedDict):
     name: str
     type: Literal["custom", "latest-release", "latest-snapshot"]
 
+    allowedReleaseTypes: Optional[
+        Sequence[
+            Literal[
+                "release", "snapshot", "beta", "alpha"
+            ]
+        ]
+    ]
+
     created: str
     icon: Optional[str]
 

@@ -6,12 +6,14 @@ import os
 from shutil import which
 from datetime import datetime
 from pathlib import Path
+
+from modules.utils import pixbuf_from_bytes
 from modules.types import LauncherStandardConfigType, PyLauncherConfigType, AuthenticationDatabaseType, ProfileType
 from modules.variables import DEFAULT_LAUNCHER_PROFILES_CONFIG, \
     LAUNCHER_PROFILES_CONFIG_FILE, MINECRAFT_DIR, DEFAULT_JVM_FLAGS, \
     PYLAUNCHER_CONFIG_DIR, PYLAUNCHER_CONFIG_FILE, PYLAUNCHER_DEFAULT_CONFIG
 
-from gi.repository import GObject, GdkPixbuf, GLib, Gio
+from gi.repository import GObject, GdkPixbuf
 
 def parse_icon(icon_str:str) -> GdkPixbuf.Pixbuf | None:
     if icon_str.startswith("data:"):
@@ -20,18 +22,20 @@ def parse_icon(icon_str:str) -> GdkPixbuf.Pixbuf | None:
             # from https://stackoverflow.com/q/34720603
             image_str = icon[1].split(",")[1]
             raw = base64.b64decode(image_str)
-            byting = GLib.Bytes.new(raw)
-            inputing = Gio.MemoryInputStream.new_from_bytes(byting)
-            inputing = GdkPixbuf.Pixbuf.new_from_stream(inputing)
-            return inputing
-    
-def format_icon(icon_path: str) -> str:
-    if isinstance(icon_path, Path):
-        icon_path = str(icon_path)
+            return pixbuf_from_bytes(raw)
 
-    with open(icon_path, "rb") as file:
-        content = base64.b64encode(file.read())
-        return f"data:image/png;base64,{content.decode()}"
+class FormatIconFile:
+    def from_path(icon_path: str):    
+        if isinstance(icon_path, Path):
+            icon_path = str(icon_path)
+
+        if os.path.exists(icon_path) is True:
+            with open(icon_path, "rb") as file:
+                return FormatIconFile.from_bytes(base64.b64encode(file.read()))
+    
+    def from_bytes(icon_content: bytes):
+        content = base64.b64encode(icon_content)
+        return b"data:image/png;base64," + content
 
 class LauncherConfig(GObject.GObject):
     __gsignals__ = {
@@ -81,7 +85,7 @@ class LauncherConfig(GObject.GObject):
         self.save()
     
     def add_profile_dict(self, name: str, config: ProfileType):
-        self.launcher_profiles_config[name] = config
+        self.launcher_profiles_config["profiles"][name] = config
         self.save()
 
     def remove_profile(self, name, save=True):
@@ -153,4 +157,3 @@ class LauncherConfig(GObject.GObject):
             json.dump(self.py_launcher_config, f, indent=4)
         
         self.emit('changed')
-    

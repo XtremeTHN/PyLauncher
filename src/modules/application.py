@@ -3,6 +3,7 @@ gi.require_versions({
     "Gtk": "4.0",
     "Adw": "1",
     "WebKit": "6.0",
+    "GdkPixbuf": "2.0",
 })
 
 from gi.repository import Gtk, Adw, Gio
