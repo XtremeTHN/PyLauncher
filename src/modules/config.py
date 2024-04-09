@@ -128,10 +128,12 @@ class LauncherConfig(GObject.GObject):
         self.launcher_profiles_config["selectedUser"] = name
         self.save()
 
-    def save(self):
+    def save(self, notify=True):
         with open(LAUNCHER_PROFILES_CONFIG_FILE, "w") as f:
             json.dump(self.launcher_profiles_config, f, indent=4)
 
         with open(PYLAUNCHER_CONFIG_FILE, "w") as f:
             json.dump(self.py_launcher_config, f, indent=4)
-        self.emit('changed')
+
+        if notify is True:
+            self.emit('changed')

@@ -140,7 +140,7 @@ class HomePage(NavContent):
     def set_selected_version(self, combo: Adw.ComboRow, _):
         version: str = combo.get_selected_item().get_string()
         self.config.get_selected_profile()["lastVersionId"] = version.split(" ")[-1]
-        self.config.save()
+        self.config.save(notify=False)
 
     def install_minecraft(self, btt: Gtk.Button, box: Gtk.Box, label: Gtk.Label, progress_bar: Gtk.ProgressBar):
         btt.set_sensitive(False)
