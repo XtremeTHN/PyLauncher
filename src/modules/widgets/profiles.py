@@ -202,7 +202,7 @@ class ProfileWidget(Gtk.Button):
         name = self.profile_config.get("name", "").strip() or "No name"
         profile = self.config.get_selected_profile()
         if profile is not None:
-            name += f'{"(Active)" if profile.get("name") == self.profile_config["name"] else ""}'
+            name += f' {"(Active)" if profile.get("name") == self.profile_config["name"] else ""}'
 
         self.widget.set_title(name)
     def __update_subtitle(self):
