@@ -6,6 +6,12 @@ __pycache__/
 # C extensions
 *.so
 
+pylauncher
+pylauncher.desktop
+trace.out
+logs/
+config/
+
 # Distribution / packaging
 .Python
 build/

@@ -1,41 +1,17 @@
 import json
 import uuid
-import base64
-import os
+import traceback
 
 from shutil import which
 from datetime import datetime
 from pathlib import Path
 
-from modules.utils import pixbuf_from_bytes
-from modules.types import LauncherStandardConfigType, PyLauncherConfigType, AuthenticationDatabaseType, ProfileType
+from modules.types import LauncherStandardConfigType, PyLauncherConfigType, User, ProfileType, EmptyDict
 from modules.variables import DEFAULT_LAUNCHER_PROFILES_CONFIG, \
     LAUNCHER_PROFILES_CONFIG_FILE, MINECRAFT_DIR, DEFAULT_JVM_FLAGS, \
     PYLAUNCHER_CONFIG_DIR, PYLAUNCHER_CONFIG_FILE, PYLAUNCHER_DEFAULT_CONFIG
 
-from gi.repository import GObject, GdkPixbuf
-
-def parse_icon(icon_str:str) -> GdkPixbuf.Pixbuf | None:
-    if icon_str.startswith("data:"):
-        icon = icon_str.strip("data:").split(";")
-        if icon[0] == "image/png":
-            # from https://stackoverflow.com/q/34720603
-            image_str = icon[1].split(",")[1]
-            raw = base64.b64decode(image_str)
-            return pixbuf_from_bytes(raw)
-
-class FormatIconFile:
-    def from_path(icon_path: str):    
-        if isinstance(icon_path, Path):
-            icon_path = str(icon_path)
-
-        if os.path.exists(icon_path) is True:
-            with open(icon_path, "rb") as file:
-                return FormatIconFile.from_bytes(base64.b64encode(file.read()))
-    
-    def from_bytes(icon_content: bytes):
-        content = base64.b64encode(icon_content)
-        return b"data:image/png;base64," + content
+from gi.repository import GObject 
 
 class LauncherConfig(GObject.GObject):
     __gsignals__ = {
@@ -93,23 +69,26 @@ class LauncherConfig(GObject.GObject):
         if save is True:
             self.save()
         
-    def get_profile(self, name):
-        return self.launcher_profiles_config["profiles"][name]
+    def get_profile(self, name) -> ProfileType | EmptyDict:
+        return self.launcher_profiles_config["profiles"].get(name, {})
 
-    def get_user(self, _uuid):
+    def get_user(self, _uuid) -> User | EmptyDict:
         return self.launcher_profiles_config["authenticationDatabase"][_uuid]
 
-    def get_selected_profile(self) -> ProfileType:
-        return self.launcher_profiles_config["profiles"][self.launcher_profiles_config["selectedProfile"]]
+    def get_selected_profile(self) -> ProfileType | EmptyDict:
+        return self.launcher_profiles_config.get("profiles", {}).get(self.launcher_profiles_config.get("selectedProfile", ""), {})
     
-    def get_profiles_names(self):
+    def get_profiles_names(self) -> list[str]:
         return list(x["name"] for x in self.launcher_profiles_config["profiles"].values())
+
+    def get_profiles_key_names(self) -> list[str]:
+        return list(self.launcher_profiles_config["profiles"].keys())
         
-    def get_profiles(self):
+    def get_profiles(self) -> list[ProfileType]:
         return self.launcher_profiles_config["profiles"]
 
-    def get_selected_user(self) -> AuthenticationDatabaseType:
-        return self.launcher_profiles_config["authenticationDatabase"][self.launcher_profiles_config["selectedUser"]]
+    def get_selected_user(self) -> User | EmptyDict:
+        return self.launcher_profiles_config.get("authenticationDatabase", {}).get(self.launcher_profiles_config.get("selectedUser", ""), {})
 
     def set_selected_profile(self, name):
         self.launcher_profiles_config["selectedProfile"] = name
@@ -155,5 +134,4 @@ class LauncherConfig(GObject.GObject):
 
         with open(PYLAUNCHER_CONFIG_FILE, "w") as f:
             json.dump(self.py_launcher_config, f, indent=4)
-        
         self.emit('changed')

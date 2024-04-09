@@ -27,7 +27,6 @@ DEFAULT_LAUNCHER_PROFILES_CONFIG: LauncherStandardConfigType = {
             "type": "custom",
 
             "created": datetime.now().isoformat(),
-            "icon": "minecraft",
 
             "lastVersionId": "latest",
             "gameDir": str(MINECRAFT_DIR),

@@ -1,5 +1,7 @@
 from typing import TypedDict, Literal, Sequence, Optional
 
+class EmptyDict(TypedDict):
+    pass
 
 class MinecraftResolution(TypedDict):
     width: int
@@ -37,7 +39,7 @@ class LauncherVersionType(TypedDict):
     format: int
     profilesFormat: int
 
-class AuthenticationDatabaseType(TypedDict):
+class User(TypedDict):
     displayName: str
     userid: str
     uuid: str
@@ -45,7 +47,7 @@ class AuthenticationDatabaseType(TypedDict):
 
 class LauncherStandardConfigType(TypedDict):
     profiles: dict[str, ProfileType]
-    authenticationDatabase: AuthenticationDatabaseType
+    authenticationDatabase: dict[str, User]
 
     launcher: PyLauncherConfigType
 

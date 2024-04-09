@@ -1,4 +1,6 @@
 import subprocess
+import shlex
+
 from gi.repository import Gtk, Adw, Gio, WebKit
 
 from modules.utils import NavContent, set_margins, get_minecraft_versions, idle, generate_minecraft_options
@@ -42,7 +44,8 @@ class HomePage(NavContent):
 
     def create_play_page(self, toolbar: Adw.ToolbarView):
         root_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
-        set_margins(root_box, [10])
+
+        clamp = Adw.Clamp(child=root_box)
 
         home_page = Gtk.ListBox(selection_mode=Gtk.SelectionMode.NONE, valign=Gtk.Align.START, vexpand=False)
         home_page.add_css_class("boxed-list")
@@ -85,34 +88,20 @@ class HomePage(NavContent):
         mine_launch_opts = Gtk.ListBox(selection_mode=Gtk.SelectionMode.NONE, valign=Gtk.Align.START, vexpand=False, css_classes=["boxed-list"])
         
         versions_row = Adw.ComboRow(title="Version", subtitle="Select minecraft version you want to play") 
-        self.versions = get_minecraft_versions()
+        self.__update_versions_model(None, versions_row)
 
-        if self.config.py_launcher_config["show_snapshots"] is False:
-            del self.versions["snapshot"]
-        if self.config.py_launcher_config["show_beta_versions"] is False:
-            del self.versions["beta"]
-        if self.config.py_launcher_config["show_alpha_versions"] is False:
-            del self.versions["alpha"]
-
-        _versions_list = ["latest"] + self.versions.join()
-        versions_model = Gtk.StringList.new(_versions_list)
-        versions_row.set_model(versions_model)
+        self.config.connect("changed", self.__update_versions_model, versions_row)
 
         versions_row.connect("notify::selected-item", self.set_selected_version)
 
-        profile = self.config.get_selected_profile()
-        for index, value in enumerate(_versions_list):
-            if value.split(" ")[-1] == profile.get("lastVersionId"):
-                versions_row.set_selected(index)
-                break
-
         mine_launch_opts.append(versions_row)
 
-        current_profile = Adw.ActionRow(title="Profile selected", subtitle=self.config.get_selected_profile()["name"], css_classes=["property"])
-        self.config.connect("changed", lambda x: current_profile.set_subtitle(self.config.get_selected_profile()["name"]))
+        user = self.config.get_selected_user()
+        current_profile = Adw.ActionRow(title="Profile selected", subtitle=self.config.get_selected_profile().get("name", "None"), css_classes=["property"])
+        self.config.connect("changed", lambda _: current_profile.set_subtitle(self.config.get_selected_profile().get("name", "None")))
 
-        current_user = Adw.ActionRow(title="User selected", subtitle=self.config.get_selected_user()["displayName"], css_classes=["property"])
-        self.config.connect("changed", lambda x: current_user.set_subtitle(self.config.get_selected_user()["username"]))
+        current_user = Adw.ActionRow(title="User selected", subtitle=self.config.get_selected_user().get("displayName", "None"), css_classes=["property"])
+        self.config.connect("changed", lambda _: current_user.set_subtitle(self.config.get_selected_user().get("displayName", "None")))
 
         mine_launch_opts.append(current_profile)
         mine_launch_opts.append(current_user)
@@ -120,7 +109,33 @@ class HomePage(NavContent):
         root_box.append(home_page)
         root_box.append(mine_launch_opts)
         
-        self.stack.add_titled_with_icon(root_box, "home-page", "Home", "go-home-symbolic")
+        self.stack.add_titled_with_icon(clamp, "home-page", "Home", "go-home-symbolic")
+    
+    def __update_versions_model(self, _, combo: Adw.ComboRow):
+        current_profile = self.config.get_selected_profile()
+        if current_profile == {}:
+            return
+        
+        versions = get_minecraft_versions()
+
+        allowed_versions = current_profile.get("allowedReleaseTypes", [])
+        if "snapshot" not in allowed_versions:
+            del versions["snapshot"]
+        if "beta" not in allowed_versions:
+            del versions["beta"]
+        if "alpha" not in allowed_versions:
+            del versions["alpha"]
+        
+        _versions_list = ["latest"] + versions.join()
+
+        versions_model = Gtk.StringList.new(_versions_list)
+        combo.set_model(versions_model)
+
+        if current_profile is not None:
+            for index, value in enumerate(_versions_list):
+                if value.split(" ")[-1] == current_profile.get("lastVersionId"):
+                    combo.set_selected(index)
+                    break
     
     def set_selected_version(self, combo: Adw.ComboRow, _):
         version: str = combo.get_selected_item().get_string()
@@ -158,8 +173,21 @@ class HomePage(NavContent):
 
         if version == "latest":
             version = get_latest_version()["release"]
+        elif version == "latest-snapshot":
+            version = get_latest_version()["snapshot"]
 
-        command = get_minecraft_command(version, MINECRAFT_DIR, generate_minecraft_options(user))
+        options = generate_minecraft_options(user)
+        options["jvmArguments"] = shlex.split(profile.get("javaArgs", ""))
+        options["executablePath"] = profile.get("javaDir", "")
+        
+        if profile.get("resolution") is not None:
+            options["customResolution"] = True
+            options["resolutionWidth"] = profile.get("resolution", {}).get("width", "")
+            options["resolutionHeight"] = profile.get("resolution", {}).get("height", "")
+        
+        options["gameDirectory"] = profile.get("gameDir", "")
+
+        command = get_minecraft_command(version, MINECRAFT_DIR, options)
 
         with Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE) as process:
             idle(btt.set_label, "Launched")
