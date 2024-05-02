@@ -68,7 +68,6 @@ class NavContent:
 
     def __init__(self):
         ...
-        # super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=spacing)
     
     def create_page(self, title, tag, spacing=10, add_to_nav=True, header=True, add_box=True):
         if tag in self.nav_stack:

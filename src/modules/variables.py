@@ -32,7 +32,7 @@ DEFAULT_LAUNCHER_PROFILES_CONFIG: LauncherStandardConfigType = {
             "gameDir": str(MINECRAFT_DIR),
 
             "javaDir": which("java"),
-            "javaArgs": None,
+            "javaArgs": "",
             "resolution": {
                 "width": 854,
                 "height": 480

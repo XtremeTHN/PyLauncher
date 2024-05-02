@@ -177,13 +177,16 @@ class HomePage(NavContent):
             version = get_latest_version()["snapshot"]
 
         options = generate_minecraft_options(user)
-        options["jvmArguments"] = shlex.split(profile.get("javaArgs", ""))
+
+        jvm_args = profile.get("javaArgs", "")
+        if jvm_args is not None:
+            options["jvmArguments"] = shlex.split(jvm_args)
         options["executablePath"] = profile.get("javaDir", "")
         
         if profile.get("resolution") is not None:
             options["customResolution"] = True
-            options["resolutionWidth"] = profile.get("resolution", {}).get("width", "")
-            options["resolutionHeight"] = profile.get("resolution", {}).get("height", "")
+            options["resolutionWidth"] = str(profile.get("resolution", {}).get("width", ""))
+            options["resolutionHeight"] = str(profile.get("resolution", {}).get("height", ""))
         
         options["gameDirectory"] = profile.get("gameDir", "")
 
