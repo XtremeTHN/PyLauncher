@@ -33,7 +33,7 @@ class PyLauncherWindow(Adw.ApplicationWindow, NavContent):
             assistant = AssistantPage(self)
             assistant.show_first_launch()
         else:
-            self.show_main_page()
+            self.create_main_page()
             
         self.toast.set_child(self.navigation)
     
@@ -41,13 +41,15 @@ class PyLauncherWindow(Adw.ApplicationWindow, NavContent):
 
         self.present()
     
-    def show_main_page(self):
+    def create_main_page(self):
         self.config = LauncherConfig()
         
         profiles = ProfilesPage(self, self.config)
         profiles.create_profiles_page()
         
         self.home_obj.config = self.config
-        self.home_obj.create_main_page()
+        header = self.home_obj.create_main_page()
+
+        profiles.header = header
         
         self.stack.set_visible_child_name("home-page")

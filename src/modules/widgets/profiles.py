@@ -219,6 +219,7 @@ class ProfilesPage(NavContent):
         self.config = config
         
         self.window = window
+        self.header: Adw.HeaderBar = None
 
         self.stack: Adw.ViewStack = window.stack
     
