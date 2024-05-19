@@ -163,7 +163,6 @@ class ProfileConfig:
 class ProfileWidget(Gtk.Button):
     def __init__(self, profile_page_widget, profile_name: str):
         self.widget = Adw.ActionRow(activatable=True)
-        set_margins(self.widget, [4,0,4,0])
 
         self.config: LauncherConfig = profile_page_widget.config
         self.nav_stack: list[Gtk.Widget] = profile_page_widget.nav_stack
