@@ -38,7 +38,9 @@ class LauncherConfig(GObject.GObject):
 
         return content
 
-    def add_profile(self, name, type, version, disable_chat=False, disable_multiplayer=False, gameDir=str(MINECRAFT_DIR), javaDir=which("java"), javaArgs=DEFAULT_JVM_FLAGS, resolution=None, icon="minecraft"):
+    def add_profile(self, name, type, version, disable_chat=False, disable_multiplayer=False, 
+                    gameDir=str(MINECRAFT_DIR), allowed_release_types=["release"], javaDir=which("java"), javaArgs=DEFAULT_JVM_FLAGS, 
+                    resolution=None, icon="minecraft"):
         self.launcher_profiles_config["profiles"][name] = {
             "name": name,
             "type": type,
@@ -46,6 +48,7 @@ class LauncherConfig(GObject.GObject):
 
             "created": datetime.now().isoformat(),
             "lastVersionId": version,
+            "allowedReleaseTypes": allowed_release_types,
 
             "gameDir": gameDir,
             "javaDir": javaDir,
