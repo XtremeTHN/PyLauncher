@@ -3,7 +3,7 @@ from gi.repository import Adw, Gtk, Gio, GLib
 from modules.config import LauncherConfig
 from modules.variables import DEFAULT_JVM_FLAGS, MINECRAFT_DIR, JAVA_PATH, \
                                 DEFAULT_MINECRAFT_WINDOW_WIDTH, DEFAULT_MINECRAFT_WINDOW_HEIGHT
-from modules.utils import NavContent, set_margins
+from modules.utils import NavContent, StyledButton, set_margins
 from modules.types import ProfileType
 
 class ProfileConfig:
@@ -13,6 +13,8 @@ class ProfileConfig:
         self.profile_conf: ProfileType = profile_widget.profile_config
         self.config: LauncherConfig = profile_widget.config
         self.window: Adw.ApplicationWindow = profile_widget.window
+
+        self.navigation: Adw.NavigationView = profile_widget.navigation
 
         self.widget = Adw.NavigationPage(title="Profile config")
         toolbar = Adw.ToolbarView.new()
@@ -94,21 +96,29 @@ class ProfileConfig:
 
         content.append(java_settings)
 
-        apply_button = Gtk.Button.new()
-        apply_button_content = Adw.ButtonContent(icon_name="emblem-ok-symbolic", label="Apply")
-        apply_button.set_child(apply_button_content)
-        set_margins(apply_button, [10])
-        
+        bottom_bar = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5, homogeneous=True)
+        set_margins(bottom_bar, [10])
+
+        apply_button = StyledButton("Apply changes", "emblem-ok-symbolic", "suggested-action")
         apply_button.connect("clicked", self.__apply_all)
+        bottom_bar.append(apply_button)
+
+        cancel_button = StyledButton("Remove profile", "user-trash-symbolic", "destructive-action")
+        cancel_button.connect("clicked", self.__remove_profile)
+        bottom_bar.append(cancel_button)
 
         self.name_row.connect("notify::text-length", lambda *_: apply_button.set_sensitive(len(self.name_row.get_text()) > 0))
 
-        toolbar.add_bottom_bar(apply_button)
+        toolbar.add_bottom_bar(bottom_bar)
 
         toolbar.set_content(scroll)
         
         self.widget.set_child(toolbar)
     
+    def __remove_profile(self, _):
+        self.config.remove_profile(self.name, save=True)
+        self.navigation.pop()
+        
     def __apply_all(self, btt):
         name = self.name_row.get_text()
         self.profile_conf["name"] = name
