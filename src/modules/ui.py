@@ -1,4 +1,4 @@
-from gi.repository import Gtk, Adw, GObject
+from gi.repository import Gtk, Adw, GObject, Gio
 
 from modules.variables import MINECRAFT_DIR
 from modules.config import LauncherConfig
@@ -6,12 +6,15 @@ from modules.config import LauncherConfig
 from modules.widgets.home import HomePage
 from modules.widgets.profiles import ProfilesPage
 from modules.widgets.assistant import AssistantPage
+
 from modules.utils import NavContent
 
 import os
 
 class PyLauncherWindow(Adw.ApplicationWindow, NavContent):
     def __init__(self, app):
+        app.create_action('quit', self.show_logs)
+
         Adw.ApplicationWindow.__init__(self, title="PyLauncher", application=app)
         NavContent.__init__(self)
 
@@ -41,6 +44,7 @@ class PyLauncherWindow(Adw.ApplicationWindow, NavContent):
 
         self.present()
     
+    
     def create_main_page(self):
         self.config = LauncherConfig()
 
@@ -59,6 +63,16 @@ class PyLauncherWindow(Adw.ApplicationWindow, NavContent):
         header.set_title_widget(self.switcher)
 
         main_page.set_child(toolbar)
+
+        header_menu_model = Gio.Menu.new()
+        header_menu_model.append("Open logs", detailed_action="app.logs")
+
+        menu_button = Gtk.MenuButton.new()
+        menu_button.set_icon_name("open-menu-symbolic")
+        menu_button.set_menu_model(header_menu_model)
+
+        header.pack_end(menu_button)
+
         # End setup
 
         profiles = ProfilesPage(self, self.config, header)

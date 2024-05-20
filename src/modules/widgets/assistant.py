@@ -7,7 +7,7 @@ class AssistantPage(NavContent):
     def __init__(self, window):
         self.nav_stack: list[Gtk.Widget] = window.nav_stack
         self.navigation: Adw.NavigationView = window.navigation
-        self.show_main_page = window.show_main_page
+        self.show_main_page = window.create_main_page
         super().__init__()
     # Step 1
     def show_first_launch(self):
