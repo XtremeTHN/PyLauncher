@@ -183,7 +183,7 @@ class ProfileWidget(Gtk.Button):
         self.profile_config = self.config.get_profile(profile_name)
         self.profile_name = profile_name
         
-        self.icon = Gtk.Picture(content_fit=Gtk.ContentFit.COVER, css_classes=["card"])
+        self.icon = Gtk.Picture(content_fit=Gtk.ContentFit.CONTAIN, css_classes=["card"])
         self.__update_icon()
 
         self.widget.add_prefix(self.icon)
