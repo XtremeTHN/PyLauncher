@@ -26,25 +26,6 @@ class HomePage(NavContent):
         self.stack: Adw.ViewStack = window.stack
         self.switcher: Adw.ViewSwitcher = window.switcher
 
-    def create_main_page(self):
-        self.config = self.config or LauncherConfig()
-
-        page = Adw.NavigationPage(title="PyLauncher", tag="main-page")
-        toolbar = Adw.ToolbarView()
-        
-        self.navigation.replace([page])
-        self.nav_stack = [page]
-
-        header = Adw.HeaderBar.new()
-        toolbar.add_top_bar(header)
-
-        toolbar.set_content(self.stack)
-
-        header.set_title_widget(self.switcher)
-
-        self.create_play_page(toolbar)
-        
-
     def create_play_page(self, toolbar: Adw.ToolbarView):
         root_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
 

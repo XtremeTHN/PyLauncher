@@ -54,6 +54,15 @@ def generate_minecraft_options(user_data: User):
         "token": ""
     }
 
+class StyledButton(Gtk.Button):
+    def __init__(self, label, icon_name, class_name=""):
+        super().__init__()
+
+        self.content = Adw.ButtonContent(label=label, icon_name=icon_name)
+
+        self.set_child(self.content)
+        self.set_css_classes([class_name])
+
 def idle(func, *args):
     def wrapper(*args):
         func(*args)

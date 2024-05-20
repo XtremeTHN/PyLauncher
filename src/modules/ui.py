@@ -43,13 +43,29 @@ class PyLauncherWindow(Adw.ApplicationWindow, NavContent):
     
     def create_main_page(self):
         self.config = LauncherConfig()
+
+        # Main page setup
+        main_page = Adw.NavigationPage(title="PyLauncher", tag="main-page")
+        toolbar = Adw.ToolbarView()
         
-        profiles = ProfilesPage(self, self.config)
+        self.navigation.replace([main_page])
+        self.nav_stack = [main_page]
+
+        header = Adw.HeaderBar.new()
+        toolbar.add_top_bar(header)
+
+        toolbar.set_content(self.stack)
+
+        header.set_title_widget(self.switcher)
+
+        main_page.set_child(toolbar)
+        # End setup
+
+        profiles = ProfilesPage(self, self.config, header)
         profiles.create_profiles_page()
         
         self.home_obj.config = self.config
-        header = self.home_obj.create_main_page()
 
-        profiles.header = header
+        self.home_obj.create_play_page(toolbar)
         
         self.stack.set_visible_child_name("home-page")

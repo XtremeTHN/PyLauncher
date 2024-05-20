@@ -212,17 +212,90 @@ class ProfileWidget(Gtk.Button):
         self.navigation.push(conf.widget)
     
 class ProfilesPage(NavContent):
-    def __init__(self, window, config: LauncherConfig):
+    def __init__(self, window, config: LauncherConfig, header: Adw.HeaderBar):
         super().__init__()
+
         self.nav_stack = window.nav_stack
         self.navigation = window.navigation
         self.config = config
         
         self.window = window
-        self.header: Adw.HeaderBar = None
+        self.header: Adw.HeaderBar = header
 
         self.stack: Adw.ViewStack = window.stack
+
+        self.add_btt = Gtk.Button.new_from_icon_name("list-add-symbolic")
+        self.add_btt.connect("clicked", self.open_profile_dialog)
+
+        self.stack.connect("notify::visible-child", self.toggle_add_button)
     
+    def toggle_add_button(self, *_):
+        if self.stack.get_visible_child_name() == "profiles-page":
+            self.header.pack_start(self.add_btt)
+        else:
+            if self.add_btt.get_parent() is not None:
+                self.header.remove(self.add_btt)
+    
+    def add_profile(self, name):
+        self.config.add_profile(name, "latest-release", "latest")
+    
+    def open_profile_dialog(self, _):
+        def on_accept(button, dialog):
+            self.add_profile(entry.get_text().strip())
+            dialog.close()
+
+        dialog = Adw.Dialog.new()
+        dialog.set_title("Add new profile")
+
+        root = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+        
+        header = Adw.HeaderBar.new()
+        header.set_show_end_title_buttons(False)
+        root.append(header)
+
+        cancel = Gtk.Button(label="Cancel")
+
+        cancel.connect("clicked", lambda _: dialog.close())
+
+        accept = Gtk.Button(label="Add", css_classes=["suggested-action"])
+        accept.set_size_request(80, -1)
+
+        accept.connect("clicked", on_accept, dialog)
+
+        header.pack_start(cancel)
+        header.pack_end(accept)
+
+        clamp = Adw.Clamp.new()
+
+        content = Gtk.ListBox(selection_mode=Gtk.SelectionMode.NONE, css_classes=["boxed-list"])
+
+        set_margins(content, [10])
+
+        entry = Adw.EntryRow(title="Profile name")
+
+        content.append(entry)
+
+        clamp.set_child(content)
+
+        root.append(clamp)
+
+        dialog.set_child(root)
+
+        dialog.present(self.window)
+    
+    def clear_listbox(self, listbox: Gtk.ListBox):
+        child = listbox.get_first_child()
+        while child is not None:
+            listbox.remove(child)
+            child = listbox.get_first_child()
+    
+    def populate_listbox(self, listbox: Gtk.ListBox):
+        self.clear_listbox(listbox)
+
+        profiles = list(map(lambda x: ProfileWidget(self, x), self.config.get_profiles_key_names()))
+        for x in profiles:
+            listbox.append(x.widget)
+
     def create_profiles_page(self):
         scroll = Gtk.ScrolledWindow()
 
@@ -231,9 +304,8 @@ class ProfilesPage(NavContent):
         content = Gtk.ListBox(selection_mode=Gtk.SelectionMode.NONE, valign=Gtk.Align.START, css_classes=["boxed-list"])
 
         scroll.set_child(content)
-
-        profiles = list(map(lambda x: ProfileWidget(self, x), self.config.get_profiles_key_names()))
-        for x in profiles:
-            content.append(x.widget)
+        self.populate_listbox(content)
+        
+        self.config.connect("changed", lambda *_: self.populate_listbox(content))
         
         self.stack.add_titled_with_icon(clamp, "profiles-page", "Profiles", "preferences-other-symbolic")
