@@ -1,6 +1,28 @@
 from gi.repository import Adw, Gtk
 from modules.utils import NavContent
 
+class LogView(Gtk.Frame):
+    def __init__(self):
+        super().__init__()
+
+        self.scroll = Gtk.ScrolledWindow()
+
+        self.set_margin_bottom(10)
+        self.set_margin_top(10)
+
+        self.view = Gtk.TextView(bottom_margin=10, left_margin=10, right_margin=10, top_margin=10, editable=False, monospace=True)
+        self.scroll.set_child(self.view)
+
+        self.vadjustment = self.view.get_vadjustment()
+
+        self.buffer = self.view.get_buffer()
+
+        self.set_child(self.scroll)
+    
+    def write(self, text):
+        self.buffer.insert_at_cursor(text)
+        self.vadjustment.set_value(self.vadjustment.get_upper())
+
 class LogsPage(NavContent):
     def __init__(self, window):
         super().__init__()
@@ -8,22 +30,15 @@ class LogsPage(NavContent):
         self.nav_stack = window.nav_stack
         self.navigation = window.navigation
 
-        page = Adw.NavigationPage(title="Logs", tag="logs-page")
-
-        toolbar = Adw.ToolbarView()
-
-        header = Adw.HeaderBar.new()
-        toolbar.add_top_bar(header)
+        page, _, toolbar = self.create_page("Logs", "logs-page", add_box=False)
 
         content = Adw.Clamp.new()
 
-        text_view = Gtk.TextView()
-        buffer = text_view.get_buffer()
-        buffer.set_text("Logs go here")
+        self.logs = LogView()
 
-        content.set_child(text_view)
+        content.set_child(self.logs)
 
-        page.set_child(toolbar)
+        toolbar.set_content(content)
 
         self.navigation.add(page)
         self.nav_stack.append(page)

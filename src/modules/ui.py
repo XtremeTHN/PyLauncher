@@ -6,6 +6,7 @@ from modules.config import LauncherConfig
 from modules.widgets.home import HomePage
 from modules.widgets.profiles import ProfilesPage
 from modules.widgets.assistant import AssistantPage
+from modules.widgets.logs import LogsPage
 
 from modules.utils import NavContent
 
@@ -13,7 +14,7 @@ import os
 
 class PyLauncherWindow(Adw.ApplicationWindow, NavContent):
     def __init__(self, app):
-        app.create_action('quit', self.show_logs)
+        app.create_action('logs', self.show_logs)
 
         Adw.ApplicationWindow.__init__(self, title="PyLauncher", application=app)
         NavContent.__init__(self)
@@ -21,6 +22,9 @@ class PyLauncherWindow(Adw.ApplicationWindow, NavContent):
         self.nav_stack = []
         self.toast = Adw.ToastOverlay.new()
         self.config: LauncherConfig = None
+
+        self.logger_view: Gtk.TextView = None
+        self.logger: Gtk.TextBuffer = None
         
         self.stack = Adw.ViewStack.new()
         self.switcher = Adw.ViewSwitcher(stack=self.stack, policy=Adw.ViewSwitcherPolicy.WIDE)
@@ -44,6 +48,8 @@ class PyLauncherWindow(Adw.ApplicationWindow, NavContent):
 
         self.present()
     
+    def show_logs(self, _, __):
+        self.navigation.push_by_tag("logs-page")
     
     def create_main_page(self):
         self.config = LauncherConfig()
@@ -55,6 +61,9 @@ class PyLauncherWindow(Adw.ApplicationWindow, NavContent):
         self.navigation.replace([main_page])
         self.nav_stack = [main_page]
 
+        self.log_page = LogsPage(self)
+        self.logger = self.log_page.logs
+
         header = Adw.HeaderBar.new()
         toolbar.add_top_bar(header)
 
@@ -64,12 +73,12 @@ class PyLauncherWindow(Adw.ApplicationWindow, NavContent):
 
         main_page.set_child(toolbar)
 
-        header_menu_model = Gio.Menu.new()
-        header_menu_model.append("Open logs", detailed_action="app.logs")
+        header_menu_model = Gio.Menu()
+        header_menu_model.append(label="Open logs", detailed_action="app.logs")
 
         menu_button = Gtk.MenuButton.new()
         menu_button.set_icon_name("open-menu-symbolic")
-        menu_button.set_menu_model(header_menu_model)
+        menu_button.set_menu_model(menu_model=header_menu_model)
 
         header.pack_end(menu_button)
 
@@ -79,6 +88,9 @@ class PyLauncherWindow(Adw.ApplicationWindow, NavContent):
         profiles.create_profiles_page()
         
         self.home_obj.config = self.config
+
+        # self.home_obj.logger_view = self.log_page
+        self.home_obj.logger = self.logger
 
         self.home_obj.create_play_page(toolbar)
         

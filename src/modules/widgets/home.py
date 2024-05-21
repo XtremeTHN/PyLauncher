@@ -1,7 +1,7 @@
 import subprocess
 import shlex
 
-from gi.repository import Gtk, Adw, Gio, WebKit
+from gi.repository import Gtk, Adw, Gio, WebKit, GLib
 
 from modules.utils import NavContent, set_margins, get_minecraft_versions, idle, generate_minecraft_options
 from modules.config import LauncherConfig
@@ -25,6 +25,9 @@ class HomePage(NavContent):
         
         self.stack: Adw.ViewStack = window.stack
         self.switcher: Adw.ViewSwitcher = window.switcher
+         
+        self.logger: Gtk.TextBuffer = window.logger
+        # self.logger_view: Gtk.TextView = window.logger_view
 
     def create_play_page(self, toolbar: Adw.ToolbarView):
         root_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
@@ -80,7 +83,7 @@ class HomePage(NavContent):
 
         mine_launch_opts.append(versions_row)
 
-        user = self.config.get_selected_user()
+        # user = self.config.get_selected_user()
         current_profile = Adw.ActionRow(title="Profile selected", subtitle=self.config.get_selected_profile().get("name", "None"), css_classes=["property"])
         self.config.connect("changed", lambda _: current_profile.set_subtitle(self.config.get_selected_profile().get("name", "None")))
 
@@ -179,7 +182,14 @@ class HomePage(NavContent):
         with Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE) as process:
             idle(btt.set_label, "Launched")
             self.notify("Minecraft Launched. You can see minecraft logs on the logs page")
-            process.wait()
+
+            idle(self.logger.buffer.set_text, "")
+            while True:
+                line = process.stdout.readline()
+
+                if not line:
+                    break
+                idle(self.logger.write, line.decode("utf-8"))
             self.restart_button_state(btt)
 
     def set_status(self, status, label, box, btt):
