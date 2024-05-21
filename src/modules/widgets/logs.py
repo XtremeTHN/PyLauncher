@@ -1,6 +1,8 @@
 from gi.repository import Adw, Gtk
 from modules.utils import NavContent
 
+import traceback
+
 class LogView(Gtk.Frame):
     def __init__(self):
         super().__init__()
@@ -29,6 +31,9 @@ class LogView(Gtk.Frame):
 class LogsPage(NavContent):
     def __init__(self, window):
         super().__init__()
+        
+        stack = traceback.extract_stack()[-2]
+        print(stack.filename, stack.lineno)
 
         self.nav_stack = window.nav_stack
         self.navigation = window.navigation
@@ -43,5 +48,7 @@ class LogsPage(NavContent):
 
         toolbar.set_content(content)
 
-        self.navigation.add(page)
-        self.nav_stack.append(page)
+        # self.navigation.add(page)
+        # self.nav_stack.append(page)
+
+        print([x.get_tag() for x in self.nav_stack])

@@ -76,9 +76,24 @@ class NavContent:
     toast: Adw.ToastOverlay
 
     def __init__(self):
+        """A helper class for creating content for navigation.
+        """
         ...
     
     def create_page(self, title, tag, spacing=10, add_to_nav=True, header=True, add_box=True):
+        """A helper function for creating navigation pages
+
+        Args:
+            title (str): The page title
+            tag (str): The page tag
+            spacing (int, optional): The spacing between widgets. Defaults to 10.
+            add_to_nav (bool, optional): Whether to add the page to the navigation view. Defaults to True.
+            header (bool, optional): Whether to add a header. Defaults to True.
+            add_box (bool, optional): Whether to add a box. Defaults to True.
+
+        Returns:
+            tuple[Adw.NavigationPage, Gtk.Box | None, Adw.ToolbarView] | tuple[None, None, None]: Will return (None, None, None) if the page already exists on the navigation view, else return every widget created for the page (3). 
+        """
         if tag in self.nav_stack:
             return None, None, None
         
