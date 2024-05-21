@@ -27,7 +27,6 @@ class HomePage(NavContent):
         self.switcher: Adw.ViewSwitcher = window.switcher
          
         self.logger: Gtk.TextBuffer = window.logger
-        # self.logger_view: Gtk.TextView = window.logger_view
 
     def create_play_page(self, toolbar: Adw.ToolbarView):
         root_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
