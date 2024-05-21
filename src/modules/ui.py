@@ -87,7 +87,7 @@ class PyLauncherWindow(Adw.ApplicationWindow, NavContent):
         
         self.home_obj.config = self.config
 
-        self.home_obj.logger = self.logger
+        self.home_obj.logger = self.log_page.logs
 
         self.home_obj.create_play_page(toolbar)
         

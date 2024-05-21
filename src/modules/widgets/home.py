@@ -7,6 +7,8 @@ from modules.utils import NavContent, set_margins, get_minecraft_versions, idle,
 from modules.config import LauncherConfig
 from modules.variables import MINECRAFT_DIR
 
+from modules.widgets.logs import LogView
+
 from minecraft_launcher_lib.utils import get_installed_versions, get_latest_version
 from minecraft_launcher_lib.install import install_minecraft_version
 from minecraft_launcher_lib.command import get_minecraft_command
@@ -26,7 +28,7 @@ class HomePage(NavContent):
         self.stack: Adw.ViewStack = window.stack
         self.switcher: Adw.ViewSwitcher = window.switcher
          
-        self.logger: Gtk.TextBuffer = window.logger
+        self.logger: LogView
 
     def create_play_page(self, toolbar: Adw.ToolbarView):
         root_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
@@ -178,11 +180,11 @@ class HomePage(NavContent):
 
         command = get_minecraft_command(version, MINECRAFT_DIR, options)
 
-        with Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE) as process:
+        with Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=MINECRAFT_DIR) as process:
             idle(btt.set_label, "Launched")
             self.notify("Minecraft Launched. You can see minecraft logs on the logs page")
 
-            idle(self.logger.buffer.set_text, "")
+            idle(self.logger.clear)
             while True:
                 line = process.stdout.readline()
 

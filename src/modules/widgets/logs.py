@@ -19,6 +19,9 @@ class LogView(Gtk.Frame):
 
         self.set_child(self.scroll)
     
+    def clear(self):
+        self.buffer.set_text("")
+    
     def write(self, text):
         self.buffer.insert_at_cursor(text)
         self.vadjustment.set_value(self.vadjustment.get_upper())
