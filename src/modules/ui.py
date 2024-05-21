@@ -23,7 +23,6 @@ class PyLauncherWindow(Adw.ApplicationWindow, NavContent):
         self.toast = Adw.ToastOverlay.new()
         self.config: LauncherConfig = None
 
-        self.logger_view: Gtk.TextView = None
         self.logger: Gtk.TextBuffer = None
         
         self.stack = Adw.ViewStack.new()
@@ -62,7 +61,6 @@ class PyLauncherWindow(Adw.ApplicationWindow, NavContent):
         self.nav_stack = [main_page]
 
         self.log_page = LogsPage(self)
-        self.logger = self.log_page.logs
 
         header = Adw.HeaderBar.new()
         toolbar.add_top_bar(header)
@@ -89,7 +87,6 @@ class PyLauncherWindow(Adw.ApplicationWindow, NavContent):
         
         self.home_obj.config = self.config
 
-        # self.home_obj.logger_view = self.log_page
         self.home_obj.logger = self.logger
 
         self.home_obj.create_play_page(toolbar)
