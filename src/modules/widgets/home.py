@@ -84,12 +84,15 @@ class HomePage(NavContent):
 
         mine_launch_opts.append(versions_row)
 
-        # user = self.config.get_selected_user()
         current_profile = Adw.ActionRow(title="Profile selected", subtitle=self.config.get_selected_profile().get("name", "None"), css_classes=["property"])
         self.config.connect("changed", lambda _: current_profile.set_subtitle(self.config.get_selected_profile().get("name", "None")))
 
-        current_user = Adw.ActionRow(title="User selected", subtitle=self.config.get_selected_user().get("displayName", "None"), css_classes=["property"])
-        self.config.connect("changed", lambda _: current_user.set_subtitle(self.config.get_selected_user().get("displayName", "None")))
+        current_user = Adw.EntryRow(title="User", text=self.config.get_selected_user().get("displayName", "None"))
+        def change_display_name(*_):
+            self.config.get_selected_user()["displayName"] = current_user.get_text()
+            
+        current_user.connect("notify::text", change_display_name)
+        self.config.connect("changed", lambda _: current_user.set_text(self.config.get_selected_user().get("displayName", "None")))
 
         mine_launch_opts.append(current_profile)
         mine_launch_opts.append(current_user)
@@ -169,7 +172,9 @@ class HomePage(NavContent):
         jvm_args = profile.get("javaArgs", "")
         if jvm_args is not None:
             options["jvmArguments"] = shlex.split(jvm_args)
-        options["executablePath"] = profile.get("javaDir", "")
+            
+        if (n:=profile.get("javaDir", "")) != "":
+            options["executablePath"] = n
         
         if profile.get("resolution") is not None:
             options["customResolution"] = True
