@@ -37,23 +37,7 @@ class ProfileConfig:
 
         self.name_row = Adw.EntryRow(title="Profile name (Required)", text=self.profile_conf["name"])
         group.add(self.name_row)
-
-        icon_path = self.profile_conf.get("icon","")
-        self.icon_row = Adw.ActionRow(title="Profile icon", subtitle=f"Click this to choose the profile icon", activatable=True)
-        self.icon = Gtk.Picture(content_fit=Gtk.ContentFit.COVER, can_shrink=True, css_classes=["card"])
-        set_margins(self.icon, [5, 0, 5, 0])
-
-        if GLib.file_test(icon_path, GLib.FileTest.EXISTS) is True:
-            self.icon.set_filename(icon_path)
-            self.icon.set_visible(True)
-        else:
-            self.icon.set_visible(False)
-        
-        self.icon_row.connect("activated", self.__choose_icon)
-
-        self.icon_row.add_prefix(self.icon)
-        group.add(self.icon_row)
-        
+                
         self.game_dir = Adw.EntryRow(title="Minecraft directory", text=self.profile_conf.get("gameDir", str(MINECRAFT_DIR)))
         group.add(self.game_dir)
         
@@ -134,8 +118,10 @@ class ProfileConfig:
         self.profile_conf["allowedReleaseTypes"] = []
         if self.allow_snapshots.get_active():
             self.profile_conf["allowedReleaseTypes"].append("snapshot")
+            
         if self.allow_old_betas.get_active():
             self.profile_conf["allowedReleaseTypes"].append("beta")
+            
         if self.allow_old_alphas.get_active():
             self.profile_conf["allowedReleaseTypes"].append("alpha")
 
@@ -150,25 +136,6 @@ class ProfileConfig:
             self.config.set_selected_profile("")
 
         self.config.save()
-    
-    def __choose_icon(self, row):
-        dialog = Gtk.FileDialog(accept_label="Open")
-        dialog.open(self.window, None, callback=self.__file_dial_cb)
-
-    def __file_dial_cb(self, dialog: Gtk.FileDialog, result: Gio.AsyncResult):
-        try:
-            file = dialog.open_finish(result)
-        except:
-            return
-
-        if file is not None:
-            if file.query_exists(None) is True:
-                self.icon.set_filename(file.get_path())
-                self.icon.set_visible(True)
-                self.profile_conf["icon"] = file.get_path()
-                return
-            
-        self.icon.set_visible(False)
 
 class ProfileWidget(Gtk.Button):
     def __init__(self, profile_page_widget, profile_name: str):
@@ -183,11 +150,6 @@ class ProfileWidget(Gtk.Button):
         self.profile_config = self.config.get_profile(profile_name)
         self.profile_name = profile_name
         
-        self.icon = Gtk.Picture(content_fit=Gtk.ContentFit.CONTAIN, css_classes=["card"])
-        self.__update_icon()
-
-        self.widget.add_prefix(self.icon)
-
         self.__update_title()
         self.__update_subtitle()
         
@@ -202,11 +164,6 @@ class ProfileWidget(Gtk.Button):
         self.__update_title()
         self.__update_subtitle()
     
-    def __update_icon(self):
-        icon = self.profile_config.get("icon","")
-        self.icon.set_filename(icon)
-        self.icon.set_visible(icon != "")
-
     def __update_title(self):
         name = self.profile_config.get("name", "").strip() or "No name"
         profile = self.config.get_selected_profile()
