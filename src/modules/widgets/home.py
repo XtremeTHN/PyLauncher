@@ -127,6 +127,8 @@ class HomePage(NavContent):
                 if value.split(" ")[-1] == current_profile.get("lastVersionId"):
                     combo.set_selected(index)
                     break
+        
+        
     
     def set_selected_version(self, combo: Adw.ComboRow, _):
         version: str = combo.get_selected_item().get_string()
