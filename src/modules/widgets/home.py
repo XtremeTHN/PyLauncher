@@ -127,9 +127,7 @@ class HomePage(NavContent):
                 if value.split(" ")[-1] == current_profile.get("lastVersionId"):
                     combo.set_selected(index)
                     break
-        
-        
-    
+            
     def set_selected_version(self, combo: Adw.ComboRow, _):
         version: str = combo.get_selected_item().get_string()
         self.config.get_selected_profile()["lastVersionId"] = version.split(" ")[-1]
@@ -188,10 +186,12 @@ class HomePage(NavContent):
         command = get_minecraft_command(version, MINECRAFT_DIR, options)
 
         with Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=MINECRAFT_DIR) as process:
+            idle(self.logger.writeln, "The next logs will be from minecraft")
+            idle(self.logger.writeln, "-" * (round(self.logger.get_allocated_width() / 10) - 2))
+            
             idle(btt.set_label, "Launched")
             self.notify("Minecraft Launched. You can see minecraft logs on the logs page")
 
-            idle(self.logger.clear)
             while True:
                 line = process.stdout.readline()
 
@@ -199,6 +199,7 @@ class HomePage(NavContent):
                     break
                 idle(self.logger.write, line.decode("utf-8"))
             self.restart_button_state(btt)
+            idle(self.logger.write, "-" * (round(self.logger.get_allocated_width() / 10) - 2))
 
     def set_status(self, status, label, box, btt):
         if status == "Installation complete":
@@ -206,8 +207,9 @@ class HomePage(NavContent):
             idle(btt.set_visible, True)
 
             self.launch_minecraft(btt)
-
-        idle(label.set_label, status)
+        else:
+            idle(label.set_label, status)
+            idle(self.logger.writeln, status)
 
     def restart_button_state(self, btt: Gtk.Button):
         idle(btt.set_visible, True)

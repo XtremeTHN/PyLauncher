@@ -28,7 +28,9 @@ class LogView(Gtk.Frame):
     def write(self, text):
         self.buffer.insert_at_cursor(text)
         self.vadjustment.set_value(self.vadjustment.get_upper())
-
+    
+    def writeln(self, text):
+        self.write(f"{text}\n")
 class LogsPage(NavContent):
     def __init__(self, window):
         super().__init__()
