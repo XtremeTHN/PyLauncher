@@ -147,14 +147,18 @@ class HomePage(NavContent):
 
             if versionId == "latest":
                 versionId = get_latest_version()["release"]
-
+                
             threading.Thread(target=install_minecraft_version, args=[versionId, MINECRAFT_DIR, {
                 "setStatus": lambda x: self.set_status(x, label, box, btt),
-                "setProgress": lambda _: self.set_progress(progress_bar)
+                "setProgress": lambda y: self.set_progress(progress_bar, y),
+                "setMax": lambda z: self.set_max(z),
             }]).start()
             return
         else:
             threading.Thread(target=self.launch_minecraft, args=[btt]).start()
+        
+    def set_max(self, z):
+        self.max = z
     
     # Executed on another thread
     def launch_minecraft(self, btt):
@@ -217,8 +221,8 @@ class HomePage(NavContent):
         idle(btt.set_label, "Launch")
         idle(btt.set_css_classes, ["pill", "suggested-action"])
     
-    def set_progress(self, progress_bar: Gtk.ProgressBar):
-        idle(progress_bar.pulse)
+    def set_progress(self, progress_bar: Gtk.ProgressBar, value):
+        idle(progress_bar.set_fraction, value / self.max)
 
     # Below functions are executed on main thread... Maybe idk.
     def open_minecraft_root(self, _):
