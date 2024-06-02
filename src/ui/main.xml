@@ -1,0 +1,18 @@
+<interface domain="com.github.XtremeTHN.PyLauncher">
+    <requires lib="gtk" version="4.0"/>
+    <requires lib="libadwaita" version="1.0"/>
+
+    <template class="main-window" parent="AdwApplicationWindow">
+        <property name="content">
+            <object class="AdwToolbarView">
+                    <child type="top">
+                        <object class="AdwHeaderBar"/>
+                    </child>
+                    <property name="content">
+                        <object class="AdwNavigationView"></object>
+                    </property>
+            </object>
+        </property>
+        <property name="title">PyLauncher</property>
+    </template>
+</interface>
