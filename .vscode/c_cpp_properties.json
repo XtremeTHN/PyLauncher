@@ -19,7 +19,8 @@
                 "/usr/include/sysprof-6",
                 "/usr/include/fribidi",
                 "/usr/include/libpng16",
-                "/usr/include/pixman-1"
+                "/usr/include/pixman-1",
+                "/usr/include/libadwaita-1"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/gcc",
