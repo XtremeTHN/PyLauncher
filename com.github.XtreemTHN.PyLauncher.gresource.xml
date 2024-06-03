@@ -1,5 +1,0 @@
-<gresources>
-    <gresource prefix="/com/github/XtremeTHN/PyLauncher">
-        <file alias="ui.xml">src/ui/main.xml</file>
-    </gresource>
-</gresources>
