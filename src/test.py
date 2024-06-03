@@ -8,15 +8,16 @@ from gi.repository import Gtk, Adw, Gio
 class PyLauncherUI(Adw.ApplicationWindow):
     __gtype_name__ = "main-window"
 
-
 class App(Adw.Application):
     def __init__(self):
-        super().__init__(application_id="com.github.XtremeTHN.PyLauncher", flags=Gio.ApplicationFlags.DEFAULT_FLAGS)
-    
-    def do_activate(self):        
+        super().__init__(application_id="com.github.XtremeTHN.PyLauncher1", flags=Gio.ApplicationFlags.DEFAULT_FLAGS)
+        
+    def do_activate(self):
         win = PyLauncherUI()
         self.add_window(win)
+        
         win.present()
 
-if __name__ == "__main__":
-    app = App().run()
+# if __name__ == "__main__":
+app = App().run()
+print("As")
