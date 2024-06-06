@@ -14,32 +14,24 @@
                         <property name="tag">welcoming</property>
         
                         <property name="child">
-                            <object class="AdwToolbarView">
-                                <!-- <child type="top">
-                                    <object class="AdwHeaderBar"/>
-                                </child> -->
-        
-                                <property name="content">
-                                    <object class="AdwStatusPage">
-                                        <property name="title">PyLauncher</property>
-                                        <property name="description">A minecraft launcher written in python</property>
-                                        <property name="icon-name">minecraft</property>
+                            <object class="AdwStatusPage">
+                                <property name="title">PyLauncher</property>
+                                <property name="description">A minecraft launcher written in python</property>
+                                <property name="icon-name">minecraft</property>
+                                <property name="child">
+                                    <object class="AdwClamp">
                                         <property name="child">
-                                            <object class="AdwClamp">
-                                                <property name="child">
-                                                    <object class="GtkButton">
-                                                        <style>
-                                                            <class name="suggested-action"/>
-                                                            <class name="pill"/>
-                                                        </style>
-                                                        <property name="label">Get started</property>
-                                                        <property name="action-name">navigation.push</property>
-                                                        <property name="action-target">'new-user'</property>
-                                                    </object>
-                                                </property>
-                                                <property name="maximum-size">100</property>
+                                            <object class="GtkButton">
+                                                <style>
+                                                    <class name="suggested-action"/>
+                                                    <class name="pill"/>
+                                                </style>
+                                                <property name="label">Get started</property>
+                                                <property name="action-name">navigation.push</property>
+                                                <property name="action-target">'new-user'</property>
                                             </object>
                                         </property>
+                                        <property name="maximum-size">100</property>
                                     </object>
                                 </property>
                             </object>
@@ -76,22 +68,28 @@
                                                         </style>
                                                     </object>
                                                 </child>
-                                                <!-- <child>
-                                                    <object class="GtkListBox">
-                                                        <style>
-                                                            <class name="boxed-list"/>
-                                                        </style>
-                                                        <property name="selection-mode">GTK_SELECTION_NONE</property>
+                                                <child>
+                                                    <object class="GtkBox">
+                                                        <property name="spacing">2</property>
+                                                        <property name="orientation">GTK_ORIENTATION_VERTICAL</property>
                                                         <child>
-                                                            <object class="AdwEntryRow">
-                                                                <property name="title">Name</property>
+                                                            <object class="GtkEntry" id="user_entry">
+                                                                <property name="placeholder-text">E.g: XtremeTHN</property>
                                                             </object>
                                                         </child>
-                                                    </object>
-                                                </child> -->
-                                                <child>
-                                                    <object class="GtkEntry" id="user_entry">
-                                                        <property name="placeholder-text">E.g: XtremeTHN</property>
+                                                        <child>
+                                                            <object class="GtkRevealer" id="bootstrap_dialog_user_status_revealer">
+                                                                <property name="transition-type">GTK_REVEALER_TRANSITION_TYPE_SLIDE_DOWN</property>
+                                                                <property name="child">
+                                                                    <object class="GtkLabel" id="bootstrap_dialog_user_status_label">
+                                                                        <style>
+                                                                            <class name="error"/>
+                                                                        </style>
+                                                                        <property name="halign">GTK_ALIGN_START</property>
+                                                                    </object>
+                                                                </property>
+                                                            </object>
+                                                        </child>
                                                     </object>
                                                 </child>
                                                 <child>
@@ -114,74 +112,84 @@
 
     <template class="main_window" parent="AdwApplicationWindow">
         <property name="content">
-            <object class="AdwToolbarView">
-                <child type="top">
-                    <object class="AdwHeaderBar">
-                        <property name="title-widget">
-                            <object class="AdwViewSwitcher">
-                                <property name="policy">wide</property>
-                                <property name="stack">stack</property>
-                            </object>
-                        </property>
-                    </object>
-                </child>
-                <child type="bottom">
-                    <object class="AdwClamp">
-                        <property name="margin-bottom">10</property>
-                        <property name="maximum-size">200</property>
+            <object class="AdwNavigationView">
+                <child>
+                    <object class="AdwNavigationPage">
+                        <property name="title">Home</property>
+                        <property name="tag">main</property>
                         <property name="child">
-                            <object class="GtkButton">
-                                <property name="label">Launch</property>
-                                <style>
-                                    <class name="suggested-action"/>
-                                </style>
-                            </object>
-                        </property>
-                    </object>
-
-                </child>
-                <property name="content">
-                    <object class="AdwViewStack" id="stack">
-                        <child>
-                            <object class="AdwViewStackPage">
-                                <property name="name">home</property>
-                                <property name="title">Home</property>
-                                <property name="icon-name">go-home-symbolic</property>
-                                <property name="child">
-                                    <object class="AdwClamp">
-                                        <property name="child">
-                                            <object class="GtkListBox">
-                                                <style>
-                                                    <class name="boxed-list"/>
-                                                </style>
-                                                <property name="valign">GTK_ALIGN_START</property>
-                                                <property name="selection-mode">GTK_SELECTION_NONE</property>
-
-                                                <child>
-                                                    <object class="AdwActionRow">
-                                                        <property name="title">Minecraft root</property>
-                                                        <property name="subtitle">Open minecraft root folder</property>
-                                                        <signal name="activated" handler="open_mine_root"/>
-                                                        <property name="activatable-widget">
-                                                            <object class="GtkButton"/>
-                                                        </property>
-                                                    </object>
-                                                </child>
-
-                                                <child>
-                                                    <object class="AdwComboRow">
-                                                        <property name="title">Version</property>
-                                                        <property name="subtitle">Select's the minecraft version</property>
-                                                    </object>
-                                                </child>
+                            <object class="AdwToolbarView">
+                                <child type="top">
+                                    <object class="AdwHeaderBar">
+                                        <property name="title-widget">
+                                            <object class="AdwViewSwitcher">
+                                                <property name="policy">wide</property>
+                                                <property name="stack">stack</property>
                                             </object>
                                         </property>
                                     </object>
+                                </child>
+                                <child type="bottom">
+                                    <object class="AdwClamp">
+                                        <property name="margin-bottom">10</property>
+                                        <property name="maximum-size">200</property>
+                                        <property name="child">
+                                            <object class="GtkButton">
+                                                <property name="label">Launch</property>
+                                                <style>
+                                                    <class name="suggested-action"/>
+                                                </style>
+                                            </object>
+                                        </property>
+                                    </object>
+                
+                                </child>
+                                <property name="content">
+                                    <object class="AdwViewStack" id="stack">
+                                        <child>
+                                            <object class="AdwViewStackPage">
+                                                <property name="name">home</property>
+                                                <property name="title">Home</property>
+                                                <property name="icon-name">go-home-symbolic</property>
+                                                <property name="child">
+                                                    <object class="AdwClamp">
+                                                        <property name="child">
+                                                            <object class="GtkListBox">
+                                                                <style>
+                                                                    <class name="boxed-list"/>
+                                                                </style>
+                                                                <property name="valign">GTK_ALIGN_START</property>
+                                                                <property name="selection-mode">GTK_SELECTION_NONE</property>
+                
+                                                                <child>
+                                                                    <object class="AdwActionRow">
+                                                                        <property name="title">Minecraft root</property>
+                                                                        <property name="subtitle">Open minecraft root folder</property>
+                                                                        <signal name="activated" handler="open_mine_root"/>
+                                                                        <property name="activatable-widget">
+                                                                            <object class="GtkButton"/>
+                                                                        </property>
+                                                                    </object>
+                                                                </child>
+                
+                                                                <child>
+                                                                    <object class="AdwComboRow">
+                                                                        <property name="title">Version</property>
+                                                                        <property name="subtitle">Select's the minecraft version</property>
+                                                                    </object>
+                                                                </child>
+                                                            </object>
+                                                        </property>
+                                                    </object>
+                                                </property>
+                                            </object>
+                                        </child>
+                                    </object>
                                 </property>
                             </object>
-                        </child>
+                        </property>
                     </object>
-                </property>
+                </child>
             </object>
         </property>
         <property name="title">PyLauncher</property>

@@ -1,4 +1,6 @@
 import gi
+import re
+
 gi.require_version("Gtk", "4.0")
 gi.require_version("Adw", "1")
 
@@ -9,17 +11,23 @@ from gi.repository import Gtk, Adw, Gio
 class PyLauncherUI(Adw.ApplicationWindow):
     __gtype_name__ = "main_window"
     
+    bootstrap_dialog_user_status_revealer: Gtk.Revealer = Gtk.Template.Child()
+    bootstrap_dialog_user_status_label: Gtk.Label = Gtk.Template.Child()
     bootstrap_dialog: Adw.Dialog = Gtk.Template.Child()
     user_entry: Gtk.Entry = Gtk.Template.Child()
     
     @Gtk.Template.Callback()
     def open_mine_root(self, _):
-        print("open")
+        ...
     
     @Gtk.Template.Callback()
     def close_dialog(self, _):
-        print(self.user_entry.get_text())
-        self.bootstrap_dialog.force_close()
+        user = self.user_entry.get_text()
+        if user == "":
+            self.bootstrap_dialog_user_status_label.set_label("Provide a username please")
+            self.bootstrap_dialog_user_status_revealer.set_reveal_child(True)
+        else:
+            self.bootstrap_dialog.force_close()
 
 class App(Adw.Application):
     def __init__(self):
