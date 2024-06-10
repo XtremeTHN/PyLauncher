@@ -1,5 +1,4 @@
 import gi
-import re
 
 gi.require_version("Gtk", "4.0")
 gi.require_version("Adw", "1")
@@ -14,6 +13,8 @@ class PyLauncherUI(Adw.ApplicationWindow):
     bootstrap_dialog_user_status_revealer: Gtk.Revealer = Gtk.Template.Child()
     bootstrap_dialog_user_status_label: Gtk.Label = Gtk.Template.Child()
     bootstrap_dialog: Adw.Dialog = Gtk.Template.Child()
+    profiles_listbox: Gtk.ListBox = Gtk.Template.Child()
+    profiles_page: Adw.ViewStackPage = Gtk.Template.Child()
     user_entry: Gtk.Entry = Gtk.Template.Child()
     
     @Gtk.Template.Callback()
