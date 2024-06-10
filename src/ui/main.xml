@@ -1,6 +1,27 @@
 <interface domain="com.github.XtremeTHN.PyLauncher">
     <requires lib="gtk" version="4.0"/>
     <requires lib="libadwaita" version="1.0"/>
+<!-- 
+    <template class="ProfilesPageChild" parent="AdwActionRow">
+        <property name="activatable-widget">
+            <object class="GtkButton"/>
+        </property>
+        <child type="suffix">
+            <object class="GtkImage">
+                <property name="icon-name">go-next-symbolic</property>
+            </object>
+        </child>
+    </template>
+
+    <template class="ProfilesPageChildConfiguration" parent="AdwNavigationPage">
+        <property name="child">
+            <object class="AdwClamp">
+                <property name="child">
+                    
+                </property>
+            </object>
+        </property>
+    </template> -->
 
     <object class="AdwDialog" id="bootstrap_dialog">
         <property name="content-width">500</property>
@@ -146,6 +167,25 @@
                                 </child>
                                 <property name="content">
                                     <object class="AdwViewStack" id="stack">
+                                        <child>
+                                            <object class="AdwViewStackPage" id="profiles_page">
+                                                <property name="name">profiles</property>
+                                                <property name="title">Profiles</property>
+                                                <property name="icon-name">preferences-other-symbolic</property>
+                                                <property name="child">
+                                                    <object class="AdwClamp">
+                                                        <property name="child">
+                                                            <object class="GtkListBox" id="profiles_listbox">
+                                                                <style>
+                                                                    <class name="boxed-list"/>
+                                                                </style>
+                                                                <property name="valign">GTK_ALIGN_CENTER</property>
+                                                            </object>
+                                                        </property>
+                                                    </object>
+                                                </property>
+                                            </object>
+                                        </child>
                                         <child>
                                             <object class="AdwViewStackPage">
                                                 <property name="name">home</property>
