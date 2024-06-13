@@ -1,0 +1,39 @@
+using Gtk 4.0
+using Adw 1
+
+template MainWindow : Adw.ApplicationWindow {
+    content: Adw.NavigationView {
+        Adw.NavigationPage {
+            tag: "main";
+            title: "Home";
+            child: Adw.ToolbarView {
+                [top]
+                Adw.HeaderBar {
+                    title-widget: Adw.ViewSwitcher {
+                        policy: wide;
+                        stack: stack;
+                    }
+                };
+
+                [bottom]
+                Adw.Clamp {
+                    margin-bottom: 10;
+                    maximum-size: 200;
+                    child: Gtk.Button {
+                        label: "Launch";
+                    }
+                    styles [
+                        
+                    ]
+                }
+
+                content: Adw.Clamp {
+                    child: Gtk.ListBox {
+                        valign: start;
+
+                    }
+                };
+            }
+        }
+    }
+}
