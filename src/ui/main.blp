@@ -1,8 +1,8 @@
-using Gtk 4.0
-using Adw 1
+using Gtk 4.0;
+using Adw 1;
 
-template MainWindow : Adw.ApplicationWindow {
-    content: Adw.NavigationView {
+template $MainWindow : Adw.ApplicationWindow {
+    content: Adw.NavigationView nav {
         Adw.NavigationPage {
             tag: "main";
             title: "Home";
@@ -12,8 +12,8 @@ template MainWindow : Adw.ApplicationWindow {
                     title-widget: Adw.ViewSwitcher {
                         policy: wide;
                         stack: stack;
-                    }
-                };
+                    };
+                }
 
                 [bottom]
                 Adw.Clamp {
@@ -21,19 +21,57 @@ template MainWindow : Adw.ApplicationWindow {
                     maximum-size: 200;
                     child: Gtk.Button {
                         label: "Launch";
-                    }
-                    styles [
-                        
-                    ]
+                        styles [
+                            "pill",
+                            "suggested-action"
+                        ]
+                    };
                 }
 
-                content: Adw.Clamp {
-                    child: Gtk.ListBox {
-                        valign: start;
+                content: Adw.ViewStack stack {
+                    Adw.ViewStackPage {
+                        name: "profiles";
+                        title: "Profiles";
+                        icon-name: "preferences-other-symbolic";
+                        child: Adw.Clamp {
+                            child: Gtk.ListBox profiles_listbox {
+                                styles [
+                                    "boxed-list"
+                                ]
+                                valign: start;
+                            };
+                        };
+                    }
+                    
+                    Adw.ViewStackPage {
+                        name: "home";
+                        title: "Home";
+                        icon-name: "go-home-symbolic";
+                        child: Adw.Clamp {
+                            child: Gtk.ListBox {
+                                styles [
+                                    "boxed-list"
+                                ]
+                                
+                                valign: start;
+                                selection-mode: none;
 
+                                Adw.ActionRow {
+                                    title: "Minecraft Root";
+                                    subtitle: "Open minecraft root folder";
+                                    activatable-widget: Gtk.Button {};
+                                    activated => $on_minecraft_root_clicked();
+                                }
+
+                                Adw.ComboRow mine_version_combobox {
+                                    title: "Version";
+                                    subtitle: "Select's the minecraft version. Some versions could not appear because your profile config";
+                                }
+                            };
+                        };
                     }
                 };
-            }
+            };
         }
-    }
+    };
 }
