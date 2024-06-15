@@ -1,0 +1,82 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $BootstrapDialog : Adw.Dialog {
+    content-width: 500;
+    can-close: false;
+    child: Adw.NavigationView {
+        Adw.NavigationPage {
+            title: "Welcome";
+            tag: "welcoming";
+
+            child: Adw.StatusPage {
+                title: "PyLauncher";
+                description: "A minecraft launcher written in python";
+                icon-name: "minecraft";
+                child: Adw.Clamp {
+                    maximum-size: 100;
+                    child: Gtk.Button {
+                        styles [
+                            "suggested-action",
+                            "pill"
+                        ]
+                        
+                        label: "Get started";
+                        action-name: "navigation.push";
+                        action-target: "new-user";
+                    };
+                };
+            };
+        }
+
+        Adw.NavigationPage {
+            title: "User creation";
+            tag: "new-user";
+
+            child: Adw.ToolbarView {
+                [top]
+                Adw.HeaderBar {
+                    show-end-title-buttons: false;
+                }
+
+                content: Adw.Clamp {
+                    maximum-size: 400;
+                    Gtk.Box {
+                        valign: center;
+                        vexpand: true;
+
+                        orientation: vertical;
+                        Gtk.Label {
+                            label: "Create a user";
+                            styles [
+                                "title-2"
+                            ]
+
+                            margin-bottom: 20;
+                        }
+
+                        Gtk.Entry user_entry {
+                            placeholder-text: "E.g: XtremeTHN";
+                        }
+
+                        Gtk.Revealer bootstrap_dialog_user_status_revealer {
+                            transition-type: slide_down;
+                            child: Gtk.Label bootstrap_dialog_user_status_label {
+                                styles [
+                                    "error"
+                                ]
+
+                                halign: start;
+                            };
+                        }
+
+                        Gtk.Button {
+                            label: "Finish";
+                            clicked => $on_bootstrap_dialog_user_creation_finished();
+                        }
+                    }
+                };
+            };
+        }
+    };
+}

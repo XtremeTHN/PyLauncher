@@ -2,6 +2,7 @@
 
 <gresources>
     <gresource prefix="/com/github/XtremeTHN/PyLauncherUI">
-        <file>main.ui</file>
+        <file alias="main.ui">../ui/main.ui</file>
+        <file alias="bootstrap-dialog.ui">../ui/bootstrap-dialog.ui</file>
     </gresource>
 </gresources>

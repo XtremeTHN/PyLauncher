@@ -31,11 +31,10 @@ corresponding .blp file and regenerate this file with blueprint-compiler.
                     <property name="maximum-size">200</property>
                     <property name="child">
                       <object class="GtkButton">
-                        <property name="label">Launch</property>
                         <style>
-                          <class name="pill"/>
                           <class name="suggested-action"/>
                         </style>
+                        <property name="label">Launch</property>
                       </object>
                     </property>
                   </object>
