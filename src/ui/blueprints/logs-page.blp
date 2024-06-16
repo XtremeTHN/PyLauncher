@@ -15,9 +15,7 @@ template $LogPage : Adw.NavigationPage {
                 spacing: 5;
 
                 Gtk.Frame {
-                    child: Gtk.TextView {
-                        buffer: Gtk.TextViewBuffer logger_buffer {}
-                    }
+                    child: Gtk.TextView {};
                 }
                 Gtk.Box {
                     orientation: horizontal;
@@ -26,19 +24,19 @@ template $LogPage : Adw.NavigationPage {
                     ]
 
                     Gtk.Button {
-                    child: Adw.ButtonContent {
-                            icon-name: "edit-clear-all-symbolic";
-                            label: "Clear logs";
-                        }
+                        child: Adw.ButtonContent {
+                                icon-name: "edit-clear-all-symbolic";
+                                label: "Clear logs";
+                            };
                     }
 
                     Gtk.Button {
                         child: Adw.ButtonContent {
                             icon-name: "document-save-symbolic";
                             label: "Save logs";
-                        }
+                        };
 
-                        on_clicked: $on_save_logs();
+                        clicked => $on_save_logs();
                     }    
                 }
             };

@@ -16,7 +16,7 @@ template $ProfileConfigPage : Adw.NavigationPage {
                         styles [
                             "suggested-action"
                         ]
-                    }
+                    };
                 }
                 Gtk.Button {
                     child: Adw.ButtonContent {
@@ -25,7 +25,7 @@ template $ProfileConfigPage : Adw.NavigationPage {
                         styles [
                             "destructive-action"
                         ]
-                    }
+                    };
                 }
             }
 
@@ -54,18 +54,18 @@ template $ProfileConfigPage : Adw.NavigationPage {
                             title: "Width";
                             adjustment: Gtk.Adjustment {
                                 lower: 0;
-                                page_increment: 10;
-                                step_increment: 1;
-                            }
+                                page-increment: 10;
+                                step-increment: 1;
+                            };
                         }
 
                         Adw.SpinRow height_row {
                             title: "Height";
                             adjustment: Gtk.Adjustment {
                                 lower: 0;
-                                page_increment: 10;
-                                step_increment: 1;
-                            }
+                                page-increment: 10;
+                                step-increment: 1;
+                            };
                         }
                     }
                 }
@@ -99,7 +99,7 @@ template $ProfileConfigPage : Adw.NavigationPage {
                         title: "JVM Arguments";
                     }
                 }
-            }
-        }
-    }
+            };
+        };
+    };
 }
