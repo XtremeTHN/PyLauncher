@@ -3,6 +3,9 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# Compiled resources
+*.gresource
+
 # C extensions
 *.so
 
