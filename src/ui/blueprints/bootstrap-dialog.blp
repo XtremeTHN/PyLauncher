@@ -23,7 +23,7 @@ template $BootstrapDialog : Adw.Dialog {
                         
                         label: "Get started";
                         action-name: "navigation.push";
-                        action-target: "new-user";
+                        action-target: "'new-user'";
                     };
                 };
             };
@@ -46,13 +46,14 @@ template $BootstrapDialog : Adw.Dialog {
                         vexpand: true;
 
                         orientation: vertical;
+                        spacing: 5;
                         Gtk.Label {
                             label: "Create a user";
                             styles [
                                 "title-2"
                             ]
 
-                            margin-bottom: 20;
+                            margin-bottom: 15;
                         }
 
                         Gtk.Entry user_entry {

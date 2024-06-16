@@ -23,16 +23,12 @@ class BootstrapDialog(Adw.Dialog):
             self.bootstrap_dialog_user_status_label.set_label("Provide a username please")
             self.bootstrap_dialog_user_status_revealer.set_reveal_child(True)
         else:
-            self.bootstrap_dialog.force_close()
+            self.force_close()
 
 @Gtk.Template(resource_path="/com/github/XtremeTHN/PyLauncherUI/main.ui")
 class PyLauncherUI(Adw.ApplicationWindow):
     __gtype_name__ = "MainWindow"
-    
-
-    # bootstrap_dialog: Adw.Dialog = Gtk.Template.Child()
-    # profiles_listbox: Gtk.ListBox = Gtk.Template.Child()
-    # profiles_page: Adw.ViewStackPage = Gtk.Template.Child()
+    profiles_listbox: Gtk.ListBox = Gtk.Template.Child()
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -41,7 +37,6 @@ class PyLauncherUI(Adw.ApplicationWindow):
         bootstrap.present(self)
         
         self.present()
-
     
     @Gtk.Template.Callback()
     def on_minecraft_root_clicked(self, _):

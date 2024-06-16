@@ -1,0 +1,105 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $ProfileConfigPage : Adw.NavigationPage {
+    child: Adw.Clamp {
+        child: Adw.ToolbarView {
+            [top]
+            Adw.HeaderBar {}
+
+            [bottom]
+            Gtk.Box {
+                Gtk.Button {
+                    child: Adw.ButtonContent {
+                        icon-name: "emblem-ok-symbolic";
+                        label: "Apply changes";
+                        styles [
+                            "suggested-action"
+                        ]
+                    }
+                }
+                Gtk.Button {
+                    child: Adw.ButtonContent {
+                        icon-name: "user-trash-symbolic";
+                        label: "Remove profile";
+                        styles [
+                            "destructive-action"
+                        ]
+                    }
+                }
+            }
+
+            content: Gtk.Box {
+                Adw.PreferencesGroup {
+                    description: "Configure the profile settings";
+
+                    Adw.SwitchRow activated {
+                        title: "Selected";
+                        subtitle: "Set this profile as selected";
+                    }
+
+                    Adw.EntryRow name_row {
+                        title: "Profile name (Required)";
+                    }
+
+                    Adw.EntryRow mine_dir_row {
+                        title: "Minecraft directory";
+                    }
+
+                    Adw.ExpanderRow {
+                        title: "Resolution";
+                        subtitle: "Change the resolution of the window";
+
+                        Adw.SpinRow width_row {
+                            title: "Width";
+                            adjustment: Gtk.Adjustment {
+                                lower: 0;
+                                page_increment: 10;
+                                step_increment: 1;
+                            }
+                        }
+
+                        Adw.SpinRow height_row {
+                            title: "Height";
+                            adjustment: Gtk.Adjustment {
+                                lower: 0;
+                                page_increment: 10;
+                                step_increment: 1;
+                            }
+                        }
+                    }
+                }
+
+                Adw.PreferencesGroup {
+                    title: "Version selection";
+                    description: "Modifies what versions will be showed on the comborow in the homepage";
+
+                    Adw.SwitchRow snapshots_row {
+                        title: "Show snapshots";
+                    }
+
+                    Adw.SwitchRow old_betas_row {
+                        title: "Show old betas";
+                    }
+
+                    Adw.SwitchRow old_alphas_row {
+                        title: "Show old alphas";
+                    }
+                }
+
+                Adw.PreferencesGroup {
+                    title: "Java settings";
+                    description: "Some java configurations";
+
+                    Adw.EntryRow java_path_row {
+                        title: "Java path";
+                    }
+
+                    Adw.EntryRow java_args_row {
+                        title: "JVM Arguments";
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,47 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $LogPage : Adw.NavigationPage {
+    title: "Logs";
+    tag: "logs-page";
+
+    child: Adw.ToolbarView {
+        [top]
+        Adw.HeaderBar {}
+        
+        content: Adw.Clamp {
+            child: Gtk.Box {
+                orientation: vertical;
+                spacing: 5;
+
+                Gtk.Frame {
+                    child: Gtk.TextView {
+                        buffer: Gtk.TextViewBuffer logger_buffer {}
+                    }
+                }
+                Gtk.Box {
+                    orientation: horizontal;
+                    styles [
+                        "linked"
+                    ]
+
+                    Gtk.Button {
+                    child: Adw.ButtonContent {
+                            icon-name: "edit-clear-all-symbolic";
+                            label: "Clear logs";
+                        }
+                    }
+
+                    Gtk.Button {
+                        child: Adw.ButtonContent {
+                            icon-name: "document-save-symbolic";
+                            label: "Save logs";
+                        }
+
+                        on_clicked: $on_save_logs();
+                    }    
+                }
+            };
+        };
+    };
+}

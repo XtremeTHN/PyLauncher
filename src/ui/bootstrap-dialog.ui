@@ -31,7 +31,7 @@ corresponding .blp file and regenerate this file with blueprint-compiler.
                         </style>
                         <property name="label">Get started</property>
                         <property name="action-name">navigation.push</property>
-                        <property name="action-target">new-user</property>
+                        <property name="action-target">'new-user'</property>
                       </object>
                     </property>
                   </object>
@@ -59,13 +59,14 @@ corresponding .blp file and regenerate this file with blueprint-compiler.
                         <property name="valign">3</property>
                         <property name="vexpand">true</property>
                         <property name="orientation">1</property>
+                        <property name="spacing">5</property>
                         <child>
                           <object class="GtkLabel">
                             <property name="label">Create a user</property>
                             <style>
                               <class name="title-2"/>
                             </style>
-                            <property name="margin-bottom">20</property>
+                            <property name="margin-bottom">15</property>
                           </object>
                         </child>
                         <child>
