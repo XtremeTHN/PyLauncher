@@ -3,13 +3,13 @@ import sys
 from src.modules.style import Logger
 from src.modules.utils import check_call
 
-from src.modules.run_utils import ResourcesFile, UI_DIR, BLP_DIR, \
-    BLP_FILES, UI_FILES
+from src.modules.run_utils import ResourcesFile, GetUiFiles, UI_DIR, BLP_DIR, \
+    BLP_FILES
 
 res = ResourcesFile()
 check_call("blueprint-compiler", "batch-compile", UI_DIR, BLP_DIR, *BLP_FILES, can_exit=True, buffer=sys.stdout)
 
-for x in UI_FILES:
+for x in GetUiFiles():
     res.append(x)
     
 res.save()
