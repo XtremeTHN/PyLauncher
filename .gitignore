@@ -6,6 +6,9 @@ __pycache__/
 # Compiled resources
 *.gresource
 
+# Compiled blueprint files
+*.ui
+
 # C extensions
 *.so
 
