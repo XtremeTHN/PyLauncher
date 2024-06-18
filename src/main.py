@@ -3,27 +3,16 @@ import gi
 gi.require_version("Gtk", "4.0")
 gi.require_version("Adw", "1")
 
-from modules.utils import setTimeout
 from gi.repository import Gtk, Adw, Gio
 
 res = Gio.Resource.load("resources/com.github.XtremeTHN.PyLauncherUI.gresource")
 Gio.resources_register(res)
 
-@Gtk.Template(resource_path="/com/github/XtremeTHN/PyLauncherUI/bootstrap-dialog.ui")
-class BootstrapDialog(Adw.Dialog):
-    __gtype_name__ = "BootstrapDialog"
-    bootstrap_dialog_user_status_revealer: Gtk.Revealer = Gtk.Template.Child()
-    bootstrap_dialog_user_status_label: Gtk.Label = Gtk.Template.Child()
-    user_entry: Gtk.Entry = Gtk.Template.Child()
-    
-    @Gtk.Template.Callback()
-    def on_bootstrap_dialog_user_creation_finished(self, _):
-        user = self.user_entry.get_text()
-        if user == "":
-            self.bootstrap_dialog_user_status_label.set_label("Provide a username please")
-            self.bootstrap_dialog_user_status_revealer.set_reveal_child(True)
-        else:
-            self.force_close()
+from backend.config import LauncherConfig
+
+from frontend.profiles import ProfileRow
+from frontend.first_dialog import BootstrapDialog
+
 
 @Gtk.Template(resource_path="/com/github/XtremeTHN/PyLauncherUI/main.ui")
 class PyLauncherUI(Adw.ApplicationWindow):
@@ -35,8 +24,19 @@ class PyLauncherUI(Adw.ApplicationWindow):
 
         bootstrap = BootstrapDialog()
         bootstrap.present(self)
+    
+        self.__update(None, None)
+        LauncherConfig.connect("changed", self.__update)
         
         self.present()
+    
+    def __update(self, _, __):
+        while (n:=self.profiles_listbox.get_first_child()) is not None:
+            self.profiles_listbox.remove(n)
+        
+        for x in LauncherConfig.get_profiles().values():
+            # profile = LauncherConfig.get_profile(x)
+            self.profiles_listbox.append(ProfileRow(x))
     
     @Gtk.Template.Callback()
     def on_minecraft_root_clicked(self, _):

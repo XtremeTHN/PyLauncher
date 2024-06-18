@@ -1,9 +1,9 @@
 import sys
 
-from src.modules.style import Logger
-from src.modules.utils import check_call
+from src.backend.style import Logger
+from src.backend.utils import check_call
 
-from src.modules.run_utils import ResourcesFile, GetUiFiles, UI_DIR, BLP_DIR, \
+from src.backend.run_utils import ResourcesFile, GetUiFiles, UI_DIR, BLP_DIR, \
     BLP_FILES
 
 res = ResourcesFile()
@@ -14,6 +14,8 @@ for x in GetUiFiles():
     
 res.save()
 res.compile()
+
+# Logger.error(res.items)
 
 Logger.info("Notes:")
 print("\t• If the libadwaita stylesheet not applying, it should be a problem related to callbacks")

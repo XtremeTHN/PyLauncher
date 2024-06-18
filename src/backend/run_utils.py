@@ -7,8 +7,8 @@ from .utils import check_call
 
 SOURCE_DIR = os.getcwd()
 RESOURCES_DIR = os.path.join(SOURCE_DIR, "src", "resources")
-UI_DIR = os.path.join(SOURCE_DIR, "src", "ui", "xml")
-BLP_DIR = os.path.join(SOURCE_DIR, "src", "ui", "blueprints")
+UI_DIR = os.path.join(SOURCE_DIR, "src", "frontend", "xml")
+BLP_DIR = os.path.join(SOURCE_DIR, "src", "frontend", "blueprints")
 BLP_FILES = glob(os.path.join(BLP_DIR, "*.blp"), recursive=True)
 
 class ResourcesFile:
@@ -39,4 +39,4 @@ class ResourcesFile:
             file.write(ET.tostring(self.xml))
             
 def GetUiFiles():
-    return glob("ui/xml/*.ui", root_dir=os.path.join(SOURCE_DIR, "src"))
+    return glob("frontend/xml/*.ui", root_dir=os.path.join(SOURCE_DIR, "src"))

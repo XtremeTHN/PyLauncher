@@ -5,6 +5,8 @@ from typing import Callable
 from pathlib import Path
 from glob import glob
 
+from gi.repository import Gtk
+
 import time
 
 from subprocess import Popen, PIPE

@@ -2,9 +2,10 @@ using Gtk 4.0;
 using Adw 1;
 
 template $ProfileWidget : Adw.ActionRow {
-    suffix: Gtk.Image {
+    [suffix]
+    Gtk.Image {
         icon-name: "emblem-system-symbolic";
-    };
+    }
 
     activatable-widget: Gtk.Button {};
     activated => $on_profile_widget_clicked();

@@ -1,0 +1,10 @@
+certifi==2024.6.2
+charset-normalizer==3.3.2
+colorama==0.4.6
+idna==3.7
+minecraft-launcher-lib==6.5
+pycairo==1.26.0
+PyGObject==3.48.2
+PyGObject-stubs==2.11.0
+requests==2.32.3
+urllib3==2.2.1

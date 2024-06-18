@@ -1,5 +1,6 @@
 {
     "files.associations": {
         "adwaita.h": "c"
-    }
+    },
+    "python.REPL.enableREPLSmartSend": false
 }
