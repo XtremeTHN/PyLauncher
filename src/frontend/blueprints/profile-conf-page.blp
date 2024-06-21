@@ -9,7 +9,7 @@ template $ProfileConfigPage : Adw.NavigationPage {
 
             [bottom]
             Gtk.Box {
-                Gtk.Button {
+                Gtk.Button apply_btt {
                     child: Adw.ButtonContent {
                         icon-name: "emblem-ok-symbolic";
                         label: "Apply changes";
@@ -17,8 +17,10 @@ template $ProfileConfigPage : Adw.NavigationPage {
                             "suggested-action"
                         ]
                     };
+
+                    clicked => $on_apply_btt_clicked();
                 }
-                Gtk.Button {
+                Gtk.Button rm_btt {
                     child: Adw.ButtonContent {
                         icon-name: "user-trash-symbolic";
                         label: "Remove profile";
@@ -26,6 +28,8 @@ template $ProfileConfigPage : Adw.NavigationPage {
                             "destructive-action"
                         ]
                     };
+
+                    clicked => $on_rm_btt_clicked();
                 }
             }
 
