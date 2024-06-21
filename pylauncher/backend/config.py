@@ -1,13 +1,12 @@
 import json
 import uuid
-import traceback
 
 from shutil import which
 from datetime import datetime
 from pathlib import Path
 
-from .types import LauncherStandardConfig, PyLauncherConfig, User, Profile, EmptyDict
-from .variables import DEFAULT_LAUNCHER_PROFILES_CONFIG, \
+from pylauncher.backend.types import LauncherStandardConfig, PyLauncherConfig, User, Profile, EmptyDict
+from pylauncher.backend.variables import DEFAULT_LAUNCHER_PROFILES_CONFIG, \
     LAUNCHER_PROFILES_CONFIG_FILE, MINECRAFT_DIR, DEFAULT_JVM_FLAGS, \
     PYLAUNCHER_CONFIG_DIR, PYLAUNCHER_CONFIG_FILE, PYLAUNCHER_DEFAULT_CONFIG
 
@@ -24,9 +23,12 @@ class _config(GObject.GObject):
 
         self.py_launcher_config: PyLauncherConfig = self.__open_file(PYLAUNCHER_CONFIG_FILE, 
                                                                     PYLAUNCHER_DEFAULT_CONFIG)
+        
+        self.first_launch = False
 
     def __open_file(self, file: Path, default):
         if file.exists() is False:
+            self.first_launch = True
             file.parent.mkdir(parents=True, exist_ok=True)
             with open(str(file), 'w') as file_obj:
                 json.dump(default, file_obj, indent=4)
@@ -37,6 +39,9 @@ class _config(GObject.GObject):
                 content = json.load(file_obj)
 
         return content
+
+    def is_first_launch(self):
+        return self.first_launch
 
     def add_profile(self, name, type, version, disable_chat=False, disable_multiplayer=False, 
                     gameDir=str(MINECRAFT_DIR), allowed_release_types=["release"], javaDir=which("java"), javaArgs=DEFAULT_JVM_FLAGS, 

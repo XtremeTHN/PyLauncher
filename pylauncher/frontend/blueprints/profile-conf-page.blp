@@ -2,38 +2,44 @@ using Gtk 4.0;
 using Adw 1;
 
 template $ProfileConfigPage : Adw.NavigationPage {
-    child: Adw.Clamp {
-        child: Adw.ToolbarView {
-            [top]
-            Adw.HeaderBar {}
+    child: Adw.ToolbarView {
+        [top]
+        Adw.HeaderBar {}
 
-            [bottom]
-            Gtk.Box {
+        [bottom]
+        Adw.Clamp {
+            child: Gtk.Box {
+                homogeneous: true;
+                margin-bottom: 10;
+                spacing: 5;
+
                 Gtk.Button apply_btt {
                     child: Adw.ButtonContent {
                         icon-name: "emblem-ok-symbolic";
                         label: "Apply changes";
-                        styles [
-                            "suggested-action"
-                        ]
                     };
 
                     clicked => $on_apply_btt_clicked();
                 }
                 Gtk.Button rm_btt {
+                    styles [
+                        "destructive-action"
+                    ]
                     child: Adw.ButtonContent {
                         icon-name: "user-trash-symbolic";
                         label: "Remove profile";
-                        styles [
-                            "destructive-action"
-                        ]
                     };
 
                     clicked => $on_rm_btt_clicked();
                 }
-            }
+            };
+        }
 
-            content: Gtk.Box {
+        content: Adw.Clamp {
+            child: Gtk.Box {
+                orientation: vertical;
+                spacing: 10;
+
                 Adw.PreferencesGroup {
                     description: "Configure the profile settings";
 

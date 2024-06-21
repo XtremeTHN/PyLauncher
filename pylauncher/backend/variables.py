@@ -5,7 +5,7 @@ from shutil import which
 from datetime import datetime
 
 from minecraft_launcher_lib.utils import get_java_executable
-from .types import LauncherStandardConfig, PyLauncherConfig
+from pylauncher.backend.types import LauncherStandardConfig, PyLauncherConfig
 
 MINECRAFT_DIR = pathlib.Path(pathlib.Path.home() / ".minecraft")
 PYLAUNCHER_CONFIG_FILE = pathlib.Path(MINECRAFT_DIR / "pylauncher" / "config.json")

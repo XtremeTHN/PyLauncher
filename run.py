@@ -1,9 +1,9 @@
 import sys
 
-from src.backend.style import Logger
-from src.backend.utils import check_call
+from pylauncher.backend.style import Logger
+from pylauncher.backend.utils import check_call
 
-from src.backend.run_utils import ResourcesFile, GetUiFiles, UI_DIR, BLP_DIR, \
+from pylauncher.backend.run_utils import ResourcesFile, GetUiFiles, UI_DIR, BLP_DIR, \
     BLP_FILES
 
 res = ResourcesFile()
@@ -15,9 +15,10 @@ for x in GetUiFiles():
 res.save()
 res.compile()
 
-# Logger.error(res.items)
-
 Logger.info("Notes:")
 print("\t• If the libadwaita stylesheet not applying, it should be a problem related to callbacks")
 
-check_call("python3", "main.py", wd="src", buffer=sys.stdout, can_exit=True)
+# check_call("python3", "main.py", wd="pylauncher", buffer=sys.stdout, can_exit=True)
+from pylauncher.main import main
+
+sys.exit(main())

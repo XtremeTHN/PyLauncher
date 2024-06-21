@@ -4,7 +4,7 @@ import pathlib
 _TEST_DATA_DIR = "/home/axel/Documents/Projects/LinuxProjects/PyLauncherUi"
 
 # Change when the project is finished
-DATA_DIR = pathlib.Path(_TEST_DATA_DIR) / "src"
+DATA_DIR = pathlib.Path(_TEST_DATA_DIR) / "pylauncher"
 
 RESOURCES_FILE = DATA_DIR / "resources" / "com.github.XtremeTHN.PyLauncherUI.gresource"
 

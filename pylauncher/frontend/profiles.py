@@ -1,6 +1,6 @@
-from gi.repository import Gtk, Adw
-from backend.config import LauncherConfig
-from backend.types import Profile
+from gi.repository import Gtk, Adw, GLib
+from pylauncher.backend.config import LauncherConfig
+from pylauncher.backend.types import Profile
 
 @Gtk.Template(resource_path="/com/github/XtremeTHN/PyLauncherUI/profile-conf-page.ui")
 class ProfileConfPage(Adw.NavigationPage):
@@ -16,7 +16,7 @@ class ProfileConfPage(Adw.NavigationPage):
     height_row: Adw.SpinRow = Gtk.Template.Child()
     snapshots_row: Adw.SwitchRow = Gtk.Template.Child()
     old_betas_row: Adw.SwitchRow = Gtk.Template.Child()
-    old_aplhas_row: Adw.SwitchRow = Gtk.Template.Child()
+    old_alphas_row: Adw.SwitchRow = Gtk.Template.Child()
     
     java_path_row: Adw.EntryRow = Gtk.Template.Child()
     java_args_row: Adw.EntryRow = Gtk.Template.Child()
@@ -25,6 +25,8 @@ class ProfileConfPage(Adw.NavigationPage):
         super().__init__(**kwargs)
         self.profile = profile
         
+        self.set_title(f'{self.profile.get("name", "Unknown")} Config')
+                
         print(self.activated, self.name_row)
         
         self.activated.set_active(LauncherConfig.get_selected_profile().get("name") == profile.get("name"))
@@ -46,18 +48,22 @@ class ProfileConfPage(Adw.NavigationPage):
         self.java_path_row.props.text = profile.get("javaDir", "")
         self.java_args_row.props.text = profile.get("javaArgs", "")
 
+    @Gtk.Template.Callback()
     def on_apply_btt_clicked(self, _):
         ...
-    
+        
+    @Gtk.Template.Callback()
     def on_rm_btt_clicked(self, _):
         ...
 
 @Gtk.Template(resource_path="/com/github/XtremeTHN/PyLauncherUI/profile-widget.ui")
 class ProfileRow(Adw.ActionRow):
     __gtype_name__ = "ProfileWidget"
-    def __init__(self, profile: Profile, **kwargs):
+    def __init__(self, profile: Profile, window, **kwargs):
         super().__init__(**kwargs)
         
+        self.nav: Adw.NavigationView = window.nav
+                
         self.profile = profile
         self.profile_conf_page = ProfileConfPage(profile)
         
@@ -71,5 +77,7 @@ class ProfileRow(Adw.ActionRow):
         
         self.props.subtitle = f'Version: {self.profile.get("lastVersionId")}'
     
+    @Gtk.Template.Callback()
     def on_profile_widget_clicked(self, _):
-        ...
+        print("Ad")
+        self.nav.push(self.profile_conf_page)

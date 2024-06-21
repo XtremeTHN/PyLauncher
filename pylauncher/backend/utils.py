@@ -1,11 +1,9 @@
-from threading import Thread, Event
-from .style import Logger
+from threading import Thread
+from pylauncher.backend.style import Logger
 from typing import Callable
 
 from pathlib import Path
 from glob import glob
-
-from gi.repository import Gtk
 
 import time
 

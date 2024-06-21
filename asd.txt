@@ -1,8 +1,0 @@
-<gresources>
-    <gresource prefix="/com/github/XtremeTHN/PyLauncherUI">
-        <file alias="main.ui">../ui/main.ui</file>
-        <file alias="bootstrap-dialog.ui">../ui/bootstrap-dialog.ui</file>
-        <file alias="profile-conf-page.ui">../ui/profile-conf-page.ui</file>
-        <file alias="profile-widget.ui">../ui/profile-widget.ui</file>
-    <file alias="aloh">hola</file></gresource>
-</gresources>
